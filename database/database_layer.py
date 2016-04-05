@@ -43,6 +43,12 @@ class DatabaseConnection(object):
             nodes.append(new_node)
         return nodes
 
+    def get_all_relationships(self):
+        relations = list()
+        for relation in self.connection.cypher.stream("Match (a)-[r]->(b) return r"):
+            relations.append(relation[0])
+        return relations
+
 
 # # ...
 # dc = DatabaseConnection()

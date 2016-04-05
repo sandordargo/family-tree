@@ -11,8 +11,7 @@ APPLICATION_NAME = "Family Tree Application"
 @app.route("/index.html")
 def show_tree():
     db = database_layer.DatabaseConnection()
-    nodes = db.get_all_persons()
-    return render_template('index.html', persons=db.get_all_persons())
+    return render_template('index.html', persons=db.get_all_persons(), relations=db.get_all_relationships())
 
 
 @app.route("/new_person.html")

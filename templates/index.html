@@ -1,10 +1,29 @@
 <html>
     <body>
+        <h1>
+            Persons
+        </h1>
         {% for person in persons %}
         <!--<div>-->
             <p>
                 {{person.name}}</br>
                 {{person.birth}}</br>
+            </p>
+        <!--</div>-->
+        {% endfor %}
+
+        <h1>
+            Relationships
+        </h1>
+        {% for relation in relations %}
+        <!--<div>-->
+            <p>
+                {{relation.start_node}}</br>
+                {{relation.end_node}}</br>
+                {{relation.type}}</br>
+                {% for property in relation.properties %}
+                    {{property}} : {{relation.properties[property]}}</br>
+                {% endfor %}
             </p>
         <!--</div>-->
         {% endfor %}
