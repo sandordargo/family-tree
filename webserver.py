@@ -25,6 +25,16 @@ def add_new_person():
         return render_template('new_person.html')
 
 
+@app.route("/persons/<int:person_id>/delete/", methods=['GET', 'POST'])
+def delete_person(person_id):
+    if request.method == 'POST':
+        db = database_layer.DatabaseConnection()
+        db.remove_person(person_id)
+        return redirect(url_for('show_tree'))
+    else:
+        return render_template('delete_person.html', person_id=person_id)
+
+
 @app.route("/new_relationship.html")
 def add_new_relationship():
     pass

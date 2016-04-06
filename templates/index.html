@@ -7,7 +7,9 @@
         <!--<div>-->
             <p>
                 {{person.name}}</br>
+                {{person.id}}</br>
                 {{person.birth}}</br>
+                <a href="{{ url_for('delete_person', person_id=person.id) }}">Delete</a></br>
             </p>
         <!--</div>-->
         {% endfor %}

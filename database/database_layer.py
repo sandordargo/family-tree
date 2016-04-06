@@ -31,8 +31,8 @@ class DatabaseConnection(object):
     def remove_relationship(self):
         pass
 
-    def remove_person(self):
-        pass
+    def remove_person(self, person_id):
+        self.connection.cypher.stream("MATCH(p:Person) where ID(p) = {} OPTIONAL MATCH(p) - [r] - () DELETE r, p".format(person_id))
 
     def add_person_property(self):
         pass
@@ -40,7 +40,7 @@ class DatabaseConnection(object):
     def get_all_persons(self):
         nodes = list()
         for n in self.connection.cypher.stream("START z=node(*) RETURN z"):
-            new_node = node.Node(n[0].properties["name"], n[0].properties["born"])
+            new_node = node.Node(str(n[0].uri).rsplit('/', 1)[-1], n[0].properties["name"], n[0].properties["born"])
             nodes.append(new_node)
         return nodes
 
