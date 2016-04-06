@@ -20,7 +20,8 @@ class DatabaseConnection(object):
         self.uri = self.connection.uri
 
     def add_person(self, person_name, year_of_birth):
-        self.connection.create(Node("Person", name=person_name, birth=year_of_birth))
+        print('person_name: {}, year of birth {}'.format(person_name, year_of_birth))
+        self.connection.create(Node("Person", name=person_name, born=year_of_birth))
 
     def add_relationship(self, start_id, end_id, relationship_type):
         start_node = self.connection.find_one("Person", property_key='uid', property_value=start_id)

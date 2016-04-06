@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, url_for, redirect
 
 from database import database_layer
 
@@ -14,9 +14,15 @@ def show_tree():
     return render_template('index.html', persons=db.get_all_persons(), relations=db.get_all_relationships())
 
 
-@app.route("/new_person.html")
+@app.route("/new_person.html", methods=['GET', 'POST'])
 def add_new_person():
-    pass
+    if request.method == 'POST':
+        db = database_layer.DatabaseConnection()
+        db.add_person(person_name=request.form['name'],
+                      year_of_birth=request.form['born'])
+        return redirect(url_for('show_tree'))
+    else:
+        return render_template('new_person.html')
 
 
 @app.route("/new_relationship.html")
