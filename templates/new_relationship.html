@@ -1,0 +1,24 @@
+<html>
+    <body>
+        <h1>New relationship</h1>
+        <form action="{{url_for('add_new_relationship')}}" method = 'post'>
+            <dl>
+                <select name="start_node">
+                    {% for person in persons %}
+                        <option value="{{ person.id }}">{{ person.name ~ " (" ~ person.birth ~ ")"}}</option>
+                    {% endfor %}
+                </select>
+                </br>
+                <select name="end_node">
+                    {% for person in persons %}
+                        <option value="{{ person.id }}">{{ person.name ~ " (" ~ person.birth ~ ")"}}</option>
+                    {% endfor %}
+                </select>
+                <dt>Type:</dt>
+                <dd><input type = 'text' size = '30' name='type' required></dd>
+           </dl>
+            <input type='submit' value='Create'>
+        </form>
+        <a href = "{{url_for('show_tree')}}">Cancel</a>
+    </body>
+</html>

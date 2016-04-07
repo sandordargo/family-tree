@@ -24,9 +24,10 @@ class DatabaseConnection(object):
         self.connection.create(Node("Person", name=person_name, born=year_of_birth))
 
     def add_relationship(self, start_id, end_id, relationship_type):
-        start_node = self.connection.find_one("Person", property_key='uid', property_value=start_id)
-        end_node = self.connection.find_one("Person", property_key='uid', property_value=end_id)
-        self.connection.create = Relationship(start_node, relationship_type, end_node)
+        start_node = self.connection.node(start_id)
+        end_node = self.connection.node(end_id)
+        self.connection.create(Relationship(start_node, 'CHILD_OF', end_node))
+
 
     def remove_relationship(self):
         pass
