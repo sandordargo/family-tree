@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from py2neo import Graph, Node, Relationship
 
-from database import node
+from database import node, relationship
 
 
 #
@@ -28,9 +28,8 @@ class DatabaseConnection(object):
         end_node = self.connection.node(end_id)
         self.connection.create(Relationship(start_node, 'CHILD_OF', end_node))
 
-
-    def remove_relationship(self):
-        pass
+    def remove_relationship(self, relationship_id):
+        self.connection.cypher.stream("MATCH n - [r] - () WHERE ID(r) = {} DELETE r".format(relationship_id))
 
     def remove_person(self, person_id):
         self.connection.cypher.stream("MATCH(p:Person) where ID(p) = {} OPTIONAL MATCH(p) - [r] - () DELETE r, p".format(person_id))
@@ -48,7 +47,12 @@ class DatabaseConnection(object):
     def get_all_relationships(self):
         relations = list()
         for relation in self.connection.cypher.stream("Match (a)-[r]->(b) return r"):
-            relations.append(relation[0])
+            new_relationship = relationship.Relationship(relationship_id=str(relation[0].uri).rsplit('/', 1)[-1],
+                                                         start_node=relation[0].start_node,
+                                                         end_node=relation[0].end_node,
+                                                         relationship_type=relation[0].type,
+                                                         properties=relation[0].properties)
+            relations.append(new_relationship)
         return relations
 
 

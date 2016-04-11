@@ -26,6 +26,7 @@
                 {% for property in relation.properties %}
                     {{property}} : {{relation.properties[property]}}</br>
                 {% endfor %}
+                <a href="{{ url_for('delete_relationship', relationship_id=relation.relationship_id) }}">Delete</a></br>
             </p>
         <!--</div>-->
         {% endfor %}
