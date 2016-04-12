@@ -37,6 +37,26 @@ class DatabaseConnection(object):
     def add_person_property(self):
         pass
 
+    def update_person(self, person_id, person_name, year_of_birth):
+        node_to_update = self.get_neo4j_person(person_id)
+        if person_name:
+            node_to_update.properties['name'] = person_name
+        if year_of_birth:
+            node_to_update.properties['born'] = year_of_birth
+        if person_name or year_of_birth:
+            node_to_update.push()
+
+    def get_neo4j_person(self, person_id):
+        single_node_list = self.connection.cypher.stream("MATCH(p:Person) where ID(p) = {} RETURN p".format(person_id))
+        for a_node in single_node_list:
+            return a_node[0]
+
+    def get_person(self, person_id):
+        neo_node = self.get_neo4j_person(person_id)
+        return node.Node(str(neo_node.uri).rsplit('/', 1)[-1],
+                         neo_node.properties["name"],
+                         neo_node.properties["born"])
+
     def get_all_persons(self):
         nodes = list()
         for n in self.connection.cypher.stream("START z=node(*) RETURN z"):

@@ -35,6 +35,19 @@ def delete_person(person_id):
     else:
         return render_template('delete_person.html', person_id=person_id)
 
+
+@app.route('/persons/<int:person_id>/edit/', methods=['GET', 'POST'])
+def edit_person(person_id):
+    db = database_layer.DatabaseConnection()
+    if request.method == 'POST':
+        db.update_person(person_id=person_id,
+                         person_name=request.form['name'],
+                         year_of_birth=request.form['year_of_birth'])
+        return redirect(url_for('show_tree'))
+    else:
+        return render_template('edit_person.html', person=db.get_person(person_id))
+
+
 @app.route("/relationships/<int:relationship_id>/delete/", methods=['GET', 'POST'])
 def delete_relationship(relationship_id):
     if request.method == 'POST':
