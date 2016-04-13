@@ -1,0 +1,31 @@
+<html>
+    <body>
+        <h1>Edit relationship</h1>
+        <form action="{{url_for('edit_relationship', relationship_id=relationship.relationship_id)}}" method = 'post'>
+            <dl>
+                <select name="start_node">
+                    {% for person in persons %}
+                        <option value="{{ person.id }}"
+                                {% if start_node_id == person.id %} selected="selected" {% endif %} >
+                            {{ person.name ~ " (" ~ person.birth ~ ")"}}
+                        </option>
+                    {% endfor %}
+                </select>
+                </br>
+                <select name="end_node">
+                    {% for person in persons %}
+                        <option value="{{ person.id }}"
+                                {% if end_node_id== person.id %} selected="selected" {% endif %} >
+                            {{ person.name ~ " (" ~ person.birth ~ ")"}}
+                        </option>
+                    {% endfor %}
+                </select>
+                <dt>Type:</dt>
+                <dd><input type = 'text' size = '30' name='type' placeholder="{{relationship.relationship_type}}"
+                           required></dd>
+           </dl>
+            <input type='submit' value='Update'>
+        </form>
+        <a href = "{{url_for('show_tree')}}">Cancel</a>
+    </body>
+</html>

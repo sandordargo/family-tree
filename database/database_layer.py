@@ -64,6 +64,21 @@ class DatabaseConnection(object):
             nodes.append(new_node)
         return nodes
 
+    def get_relationship(self, relationship_id):
+        neo_relationship = self.get_neo4j_relationship(relationship_id)
+        relationship_to_return = relationship.Relationship(relationship_id=str(neo_relationship.uri).rsplit('/', 1)[-1],
+                                         start_node=neo_relationship.start_node,
+                                         end_node=neo_relationship.end_node,
+                                         relationship_type=neo_relationship.type,
+                                         properties=neo_relationship.properties)
+        return relationship_to_return
+
+    def get_neo4j_relationship(self, relationship_id):
+        single_relationship_list = self.connection.cypher.stream("MATCH n - [r] - () WHERE ID(r) = {} RETURN r"
+                                                                 .format(relationship_id))
+        for a_relation in single_relationship_list:
+            return a_relation[0]
+
     def get_all_relationships(self):
         relations = list()
         for relation in self.connection.cypher.stream("Match (a)-[r]->(b) return r"):

@@ -57,6 +57,21 @@ def delete_relationship(relationship_id):
     else:
         return render_template('delete_relationship.html', relationship_id=relationship_id)
 
+
+@app.route('/relationships/<int:relationship_id>/edit/', methods=['GET', 'POST'])
+def edit_relationship(relationship_id):
+    db = database_layer.DatabaseConnection()
+    if request.method == 'POST':
+        return redirect(url_for('show_tree'))
+    else:
+        print(str(db.get_relationship(relationship_id).start_node.uri).rsplit('/', 1)[-1])
+        return render_template('edit_relationship.html',
+                               persons=db.get_all_persons(),
+                               relationship=db.get_relationship(relationship_id),
+                               start_node_id=str(db.get_relationship(relationship_id).start_node.uri).rsplit('/', 1)[-1],
+                               end_node_id=str(db.get_relationship(relationship_id).end_node.uri).rsplit('/', 1)[-1])
+
+
 @app.route("/new_relationship.html", methods=['GET', 'POST'])
 def add_new_relationship():
     db = database_layer.DatabaseConnection()
