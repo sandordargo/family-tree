@@ -46,6 +46,13 @@ class DatabaseConnection(object):
         if person_name or year_of_birth:
             node_to_update.push()
 
+    def update_relationship(self, relationship_id, relationship_properties):
+        relationship_to_update = self.get_neo4j_relationship(relationship_id)
+        if relationship_properties:
+            for key in relationship_properties:
+                relationship_to_update.properties[key] = relationship_properties[key]
+            relationship_to_update.push()
+
     def get_neo4j_person(self, person_id):
         single_node_list = self.connection.cypher.stream("MATCH(p:Person) where ID(p) = {} RETURN p".format(person_id))
         for a_node in single_node_list:

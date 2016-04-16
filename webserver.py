@@ -62,6 +62,18 @@ def delete_relationship(relationship_id):
 def edit_relationship(relationship_id):
     db = database_layer.DatabaseConnection()
     if request.method == 'POST':
+        import re
+        properties = {}
+        for element in request.form:
+            new_property = re.search('propertyname(\d+)', element)
+            if new_property:
+                properties[request.form[element]] = request.form['propertyvalue{}'.format(new_property.group(1))]
+            elif element.startswith('propertyvalue'):
+                pass
+            else:
+                properties[element] = request.form[element]
+        db.update_relationship(relationship_id=relationship_id,
+                               relationship_properties=properties)
         return redirect(url_for('show_tree'))
     else:
         print(str(db.get_relationship(relationship_id).start_node.uri).rsplit('/', 1)[-1])
@@ -76,12 +88,6 @@ def edit_relationship(relationship_id):
 def add_new_relationship():
     db = database_layer.DatabaseConnection()
     if request.method == 'POST':
-        # print(request.form['start_node'])
-        # print(type(request.form['start_node']))
-        # print(type(request.form['start_node'].id))
-        # print(node.Node(request.form['start_node']).id)
-        # print(request.form['end_node'].id)
-        # print(request.form['type'])
         db.add_relationship(start_id=request.form['start_node'],
                             end_id=request.form['end_node'],
                             relationship_type=request.form['type'])
