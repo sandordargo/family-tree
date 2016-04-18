@@ -37,13 +37,11 @@ class DatabaseConnection(object):
     def add_person_property(self):
         pass
 
-    def update_person(self, person_id, person_name, year_of_birth):
+    def update_person(self, person_id, person_properties):
         node_to_update = self.get_neo4j_person(person_id)
-        if person_name:
-            node_to_update.properties['name'] = person_name
-        if year_of_birth:
-            node_to_update.properties['born'] = year_of_birth
-        if person_name or year_of_birth:
+        if person_properties:
+            for key in person_properties:
+                node_to_update.properties[key] = person_properties[key]
             node_to_update.push()
 
     def update_relationship(self, relationship_id, relationship_properties):
@@ -62,12 +60,13 @@ class DatabaseConnection(object):
         neo_node = self.get_neo4j_person(person_id)
         return node.Node(str(neo_node.uri).rsplit('/', 1)[-1],
                          neo_node.properties["name"],
-                         neo_node.properties["born"])
+                         neo_node.properties["born"],
+                         neo_node.properties)
 
     def get_all_persons(self):
         nodes = list()
         for n in self.connection.cypher.stream("START z=node(*) RETURN z"):
-            new_node = node.Node(str(n[0].uri).rsplit('/', 1)[-1], n[0].properties["name"], n[0].properties["born"])
+            new_node = node.Node(str(n[0].uri).rsplit('/', 1)[-1], n[0].properties["name"], n[0].properties["born"], n[0].properties)
             nodes.append(new_node)
         return nodes
 

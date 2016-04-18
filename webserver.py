@@ -40,9 +40,18 @@ def delete_person(person_id):
 def edit_person(person_id):
     db = database_layer.DatabaseConnection()
     if request.method == 'POST':
+        import re
+        properties = {}
+        for element in request.form:
+            new_property = re.search('propertyname(\d+)', element)
+            if new_property:
+                properties[request.form[element]] = request.form['propertyvalue{}'.format(new_property.group(1))]
+            elif element.startswith('propertyvalue'):
+                pass
+            else:
+                properties[element] = request.form[element]
         db.update_person(person_id=person_id,
-                         person_name=request.form['name'],
-                         year_of_birth=request.form['year_of_birth'])
+                         person_properties=properties)
         return redirect(url_for('show_tree'))
     else:
         return render_template('edit_person.html', person=db.get_person(person_id))

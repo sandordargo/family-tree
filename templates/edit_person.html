@@ -1,10 +1,27 @@
 <html>
+    <head>
+        <script src="{{ url_for('static', filename='table_handler.js') }}"></script>
+    </head>
     <body>
         <h1>Edit Person</h1>
         <form action="{{ url_for('edit_person', person_id=person.id)}}" method='post'>
-            <p>Name:</p> <input type='text' size=80 name='name' placeholder="{{person.name}}">
-            <p>Year of birth:</p> <input type='text' size=250 name='year_of_birth' placeholder="{{person.birth}}">
+            <dl>
+            <table id="properties" border="1" style="width:100%">
+                    <tr>
+                        <th>Property name</th><th>Property value</th>
+                    </tr>
+                    {% for property in person.properties %}
+                    <tr>
+                        <td>{{property}}</td><td><input name='{{property}}' value='{{person.properties[property]}}'></td>
+                    </tr>
+                    {% endfor %}
+
+                </table>
+                <button type="button" onclick="add_row()">
+                    Add row
+                </button>
             <input type='submit' value='Edit'>
+            </dl>
         </form>
         <a href = "{{url_for('show_tree')}}">Cancel</a>
     </body>
