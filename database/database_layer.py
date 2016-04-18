@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from py2neo import Graph, Node, Relationship
 
-from database import node, relationship
+from database import person, relationship
 
 
 #
@@ -26,7 +26,7 @@ class DatabaseConnection(object):
     def add_relationship(self, start_id, end_id, relationship_type):
         start_node = self.connection.node(start_id)
         end_node = self.connection.node(end_id)
-        self.connection.create(Relationship(start_node, 'CHILD_OF', end_node))
+        self.connection.create(Relationship(start_node, relationship_type, end_node))
 
     def remove_relationship(self, relationship_id):
         self.connection.cypher.stream("MATCH n - [r] - () WHERE ID(r) = {} DELETE r".format(relationship_id))
@@ -58,15 +58,15 @@ class DatabaseConnection(object):
 
     def get_person(self, person_id):
         neo_node = self.get_neo4j_person(person_id)
-        return node.Node(str(neo_node.uri).rsplit('/', 1)[-1],
-                         neo_node.properties["name"],
-                         neo_node.properties["born"],
-                         neo_node.properties)
+        return person.Person(str(neo_node.uri).rsplit('/', 1)[-1],
+                             neo_node.properties["name"],
+                             neo_node.properties["born"],
+                             neo_node.properties)
 
     def get_all_persons(self):
         nodes = list()
         for n in self.connection.cypher.stream("START z=node(*) RETURN z"):
-            new_node = node.Node(str(n[0].uri).rsplit('/', 1)[-1], n[0].properties["name"], n[0].properties["born"], n[0].properties)
+            new_node = person.Person(str(n[0].uri).rsplit('/', 1)[-1], n[0].properties["name"], n[0].properties["born"], n[0].properties)
             nodes.append(new_node)
         return nodes
 

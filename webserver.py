@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, url_for, redirect
 
 from database import database_layer
-from database import node
 
 app = Flask(__name__)
 

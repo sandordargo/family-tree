@@ -1,4 +1,4 @@
-class Node(object):
+class Person(object):
     def __init__(self, id, name, birth, properties):
         self.id = id
         self.name = name
