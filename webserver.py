@@ -104,5 +104,10 @@ def add_new_relationship():
         return render_template('new_relationship.html', persons=db.get_all_persons())
 
 
+@app.route("/graph.html", methods=['GET'])
+def show_graph():
+    return render_template('graph.html')
+
+
 if __name__ == "__main__":
     app.run()
