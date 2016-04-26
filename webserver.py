@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, url_for, redirect
 
 from database import database_layer
 
+import json
+import random
+
 app = Flask(__name__)
 
 APPLICATION_NAME = "Family Tree Application"
@@ -106,8 +109,41 @@ def add_new_relationship():
 
 @app.route("/graph.html", methods=['GET'])
 def show_graph():
-    return render_template('graph.html')
+    db = database_layer.DatabaseConnection()
+    relationships = db.get_all_relationships()
+    nodes = db.get_all_persons()
+    family_tree_json = dict()
+    family_tree_json['edges'] = []
+    family_tree_json['nodes'] = []
+    size = 2
+    x = 1
+    y = 1
+    color = '#666'
+    for relationship in relationships:
+        relationship_as_dict = dict()
+        relationship_as_dict['id'] = relationship.relationship_id
+        relationship_as_dict['source'] = str(relationship.start_node.uri).rsplit('/', 1)[-1]
+        relationship_as_dict['target'] = str(relationship.end_node.uri).rsplit('/', 1)[-1]
+        relationship_as_dict['size'] = size
+        family_tree_json['edges'].append(relationship_as_dict)
+    for node in nodes:
+        node_as_dict = dict()
+        node_as_dict['id'] = node.id
+        node_as_dict['label'] = node.name
+        node_as_dict['size'] = size
+        node_as_dict['color'] = color
+        random_coefficient = random.random()
+        node_as_dict['x'] = x * random_coefficient - random_coefficient * 10
+        x += 1
+        node_as_dict['y'] = y * random_coefficient + random_coefficient * 10
+        y += 1
+        family_tree_json['nodes'].append(node_as_dict)
+    print family_tree_json
+    family_tree_json_dump = json.dumps(family_tree_json)
+    return render_template('graph.html', json_to_display=family_tree_json_dump)
 
 
 if __name__ == "__main__":
     app.run()
+
+
