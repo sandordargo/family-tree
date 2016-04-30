@@ -9,22 +9,19 @@ class FamilyTree(object):
         self.nodes = self.read_persons()
         self.edges = self.read_relationships()
         self.levels_on_tree = self.build_levels_dictionary()
+        self.horizontal_sort = self.sort_horizontal()
+        self.size = 2
+        self.color = '#666'
 
     def read_persons(self):
         persons = self.db.get_all_persons()
         persons_json = []
-        x = 1
-        y = 1
         for node in persons:
             node_as_dict = node.get_as_json()
             node_as_dict['id'] = node.id
             node_as_dict['label'] = node.name
             node_as_dict['child_generations'] = self.db.get_child_generations_for_person(node.id)
             node_as_dict['parent_generations'] = self.db.get_parent_generations_for_person(node.id)
-            random_coefficient = random.random()
-            node_as_dict['x'] = x * random_coefficient - random_coefficient * 10
-            x += 1
-            node_as_dict['y'] = node_as_dict['parent_generations']
             persons_json.append(node_as_dict)
         return persons_json
 
@@ -41,6 +38,11 @@ class FamilyTree(object):
         family_tree_json['nodes'] = self.nodes
         for node in family_tree_json['nodes']:
             node['y'] = self.levels_on_tree[node['id']]
+            node['x'] = self.horizontal_sort[node['id']]
+            node['size'] = self.size
+            node['color'] = self.color
+        for edge in self.edges:
+            edge['size'] = self.size
         return family_tree_json
 
     def build_levels_dictionary(self):
@@ -81,3 +83,20 @@ class FamilyTree(object):
                         person_level_dict[relationship['target']] = person_level_dict[relationship['source']]
                         reachable_persons_list.append(relationship['target'])
         return person_level_dict
+
+    def sort_horizontal(self):
+        person_horizonal_position_dict = dict()
+        x = 1
+        for person in self.nodes:
+            random_coefficient = random.random()
+            person_horizonal_position_dict[person['id']] = x * random_coefficient - random_coefficient * 10
+            x += 1
+        return person_horizonal_position_dict
+        # idea 1 top down
+        # oldest generation to middle
+        # next generation...
+
+        # idea 2 bottom up
+        # start with last generation, supposed to be the largest
+
+        # married people always next to each other
