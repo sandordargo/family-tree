@@ -96,8 +96,31 @@ class DatabaseConnection(object):
             relations.append(new_relationship)
         return relations
 
+    def get_child_generations_for_person(self, person_id):
+        return_value = next(self.connection.cypher.
+                    stream("MATCH p=(r:Person)<-[:CHILD_OF*1..20]-(x) WHERE ID(r) = {} RETURN max(length(p))".
+                           format(person_id)))[0]
+        return_value = return_value if return_value else 0
+        return return_value
 
-# # ...
+    def get_parent_generations_for_person(self, person_id):
+        return_value = next(self.connection.cypher.
+                    stream("MATCH p=(r:Person)-[:CHILD_OF*1..20]->(x) WHERE ID(r) = {} RETURN max(length(p))".
+                           format(person_id)))[0]
+
+        return_value = return_value if return_value else 0
+        return return_value
+
+    def is_descendant_of(self, descendant_person_id, ancestor_person_id):
+        path_length = next(self.connection.cypher.
+                            stream("MATCH p=(r:Person)-[:CHILD_OF*1..20]->(q:Person) WHERE ID(r) = {} and ID(q) = {}"
+                                   "RETURN max(length(p))".
+                                   format(descendant_person_id, ancestor_person_id)))[0]
+        return True if path_length else False
+
+
+
+
 # dc = DatabaseConnection()
 # dc.add_person("CHMARA OdOn", 1907)
 # dc.add_relationship("CHMARAMARIA1939", "CHMARAODON1907", "CHILD_OF")
