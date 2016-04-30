@@ -37,7 +37,7 @@ class FamilyTree(object):
         family_tree_json['edges'] = self.edges
         family_tree_json['nodes'] = self.nodes
         for node in family_tree_json['nodes']:
-            node['y'] = self.levels_on_tree[node['id']]
+            node['y'] = self.levels_on_tree[node['id']] * 2
             node['x'] = self.horizontal_sort[node['id']]
             node['size'] = self.size
             node['color'] = self.color
@@ -64,6 +64,7 @@ class FamilyTree(object):
 
         # look for adjacent relationship until there is any non-visited
         # TODO if not and there is, get any relationship
+        # TODO levels should start from zero
         while len(visited_relationships_list) < len(self.edges):
             for relationship in self.edges:
                 if relationship['id'] not in visited_relationships_list and \
@@ -85,18 +86,39 @@ class FamilyTree(object):
         return person_level_dict
 
     def sort_horizontal(self):
-        person_horizonal_position_dict = dict()
-        x = 1
-        for person in self.nodes:
-            random_coefficient = random.random()
-            person_horizonal_position_dict[person['id']] = x * random_coefficient - random_coefficient * 10
-            x += 1
-        return person_horizonal_position_dict
+        person_horizontal_position_dict = dict()
+
+        level_person_dict = dict()
+        for person in self.levels_on_tree:
+            if self.levels_on_tree[person] not in level_person_dict:
+                level_person_dict[self.levels_on_tree[person]] = list()
+                level_person_dict[self.levels_on_tree[person]].append(person)
+            else:
+                level_person_dict[self.levels_on_tree[person]].append(person)
+            # TODO make sure uniqueness
+            random_coefficient = random.randrange(0, 2 * len(self.nodes) + 1, 2)
+            person_horizontal_position_dict[person] = random_coefficient
+        print level_person_dict
+
+        for level in level_person_dict:
+            print level
+            for relationship in self.edges:
+                if relationship['type'] == 'MARRIED' and relationship['source'] in level_person_dict[level] and \
+                        relationship['target'] in level_person_dict[level]:
+                    person_horizontal_position_dict[relationship['target']] = person_horizontal_position_dict[relationship['source']] + 1
+
+        # TODO children without marriage  should be under their parents
+        # TODO every children should be under his parents or spouse's parents
+
+
+        return person_horizontal_position_dict
         # idea 1 top down
         # oldest generation to middle
         # next generation...
 
         # idea 2 bottom up
         # start with last generation, supposed to be the largest
+
+
 
         # married people always next to each other
