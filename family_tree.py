@@ -101,24 +101,22 @@ class FamilyTree(object):
         print level_person_dict
 
         for level in level_person_dict:
-            print level
             for relationship in self.edges:
                 if relationship['type'] == 'MARRIED' and relationship['source'] in level_person_dict[level] and \
                         relationship['target'] in level_person_dict[level]:
                     person_horizontal_position_dict[relationship['target']] = person_horizontal_position_dict[relationship['source']] + 1
 
-        # TODO children without marriage  should be under their parents
+        # children without marriage  should be under their parents
+        for level in level_person_dict:
+            for person in level_person_dict[level]:
+                if not self.db.is_married(person):
+                    parents = self.db.get_parents_of_person(person)
+                    new_position = 0
+                    for parent in parents:
+                        new_position += person_horizontal_position_dict[parent]
+                    new_position /= len(parents)
+                    person_horizontal_position_dict[person] = new_position
+
         # TODO every children should be under his parents or spouse's parents
 
-
         return person_horizontal_position_dict
-        # idea 1 top down
-        # oldest generation to middle
-        # next generation...
-
-        # idea 2 bottom up
-        # start with last generation, supposed to be the largest
-
-
-
-        # married people always next to each other
