@@ -4,6 +4,9 @@ class Person(object):
         self.name = name
         self.birth = birth
         self.properties = properties
+        self.x = 0
+        self.y = 0
+        self.level = 0
 
     def get_as_json(self):
         node_as_dict = dict()
