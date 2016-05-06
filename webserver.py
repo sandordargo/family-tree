@@ -1,10 +1,9 @@
+import json
+
 from flask import Flask, render_template, request, url_for, redirect
 
 from database import database_layer
-import family_tree
-
-import json
-import random
+from tree import family_tree
 
 app = Flask(__name__)
 
