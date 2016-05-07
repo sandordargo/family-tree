@@ -10,7 +10,10 @@ class FamilyTree(object):
         self.edges = self.read_relationships()
         my_vertical_sorter = vertical_sorter.VerticalSorter(self.edges)
         self.levels_on_tree = my_vertical_sorter.get_levels_dictionary()
+        print('self.levels_on_tree')
+        print(self.levels_on_tree)
         my_horizontal_sorter = horizontal_sorter.HorizontalSorter(self.levels_on_tree, self.edges)
+        my_horizontal_sorter.sort_horizontal()
         self.person_horizontal_position_dict = my_horizontal_sorter.get_person_horizontal_position_dict()
         self.size = 2
         self.color = '#666'

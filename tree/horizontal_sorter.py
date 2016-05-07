@@ -11,7 +11,6 @@ class HorizontalSorter(object):
         self.person_horizontal_position_dict = dict()
         self.position_person_dict = dict()
         self.level_person_dict = self.build_level_person_dict()
-        self.sort_horizontal()
 
     def get_person_horizontal_position_dict(self):
         return self.person_horizontal_position_dict
@@ -22,10 +21,11 @@ class HorizontalSorter(object):
         # TODO siblings next to each other (even)
         # TODO maintain position_person_dict
         self.assign_random_x_positions()
-        self.put_children_under_parents()
         self.build_position_person_dict()
+        self.put_children_under_parents()
         self.move_persons_from_same_level_and_position()
         self.move_married_people_next_to_each_other()
+ #       self.put_children_under_parents()
 
     def move_person_on_horizontal_axis_to_position(self, person_id, new_position):
         old_position = self.person_horizontal_position_dict[person_id]
@@ -64,20 +64,13 @@ class HorizontalSorter(object):
     # TODO make it recursive, if there is someone there, shift her
     # TODO move based on level
     def move_persons_from_same_level_and_position(self):
-        while self.is_there_key_with_multiple_values(self.position_person_dict):
+        while self.are_there_persons_at_the_same_positions(self.position_person_dict):
             position_with_multiple_persons = self.get_position_with_multiple_persons(self.position_person_dict)
             i = 0
             for person in position_with_multiple_persons:
                 print('persons with same position: {}'.format(position_with_multiple_persons))
                 self.move_person_on_horizontal_axis(person, -1 * i * 2)
                 i += 1
-
-    @staticmethod
-    def get_position_with_multiple_persons(dict_to_check):
-        for key in dict_to_check:
-            if len(dict_to_check[key]) > 1:
-                return dict_to_check[key]
-        raise
 
     def build_position_person_dict(self):
         for level in self.level_person_dict:
@@ -97,7 +90,8 @@ class HorizontalSorter(object):
                     new_position = 0
                     for parent in parents:
                         new_position = self.person_horizontal_position_dict[parent]
-                    self.person_horizontal_position_dict[person] = new_position
+                    #self.person_horizontal_position_dict[person] = new_position
+                    self.move_person_on_horizontal_axis_to_position(person, new_position)
 
     def assign_random_x_positions(self):
         for level in self.level_person_dict:
@@ -111,15 +105,36 @@ class HorizontalSorter(object):
         for person in self.levels_on_tree:
             if self.levels_on_tree[person] not in level_person_dict:
                 level_person_dict[self.levels_on_tree[person]] = list()
-                level_person_dict[self.levels_on_tree[person]].append(person)
-            else:
-                level_person_dict[self.levels_on_tree[person]].append(person)
+            level_person_dict[self.levels_on_tree[person]].append(person)
         return level_person_dict
 
-    @staticmethod
-    def is_there_key_with_multiple_values(dict_to_check):
-        for key in dict_to_check:
-            if len(dict_to_check[key]) > 1:
-                return True
-        return False
+    def are_there_persons_at_the_same_positions(self, position_persons_dict):
+        """
+        Checks whether there are persons at the same position on the same level
+        Returns True if there are, otherwise False
+        """
+        return self.get_position_with_multiple_persons(position_persons_dict) is not None
 
+    def get_level_of_person(self, person):
+        """
+        Returns the level of the given person
+        """
+        return self.levels_on_tree[person]
+
+    def get_position_with_multiple_persons(self, position_persons_dict):
+        """
+        Returns persons who are on the same level and at the same position
+        Returns the first such persons
+        """
+        for position in position_persons_dict:
+            if len(position_persons_dict[position]) > 1:
+                level_person_dict = dict()
+                for person in position_persons_dict[position]:
+                    level = self.get_level_of_person(person)
+                    if level not in level_person_dict:
+                        level_person_dict[level] = list()
+                    level_person_dict[level].append(person)
+                for level in level_person_dict:
+                    if len(level_person_dict[level]) > 1:
+                        return level_person_dict[level]
+        return None
