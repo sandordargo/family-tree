@@ -124,10 +124,25 @@ class DatabaseConnection(object):
                                   format(person_id)))[0]
         return True if path_length else False
 
+    def get_spouses_of_person(self, person_id):
+        spouse_list = list()
+        for spouse in self.connection.cypher.stream("MATCH p=(r:Person)-[:MARRIED]-(q:Person) WHERE ID(r) = {} "
+                                                    "RETURN q".format(person_id)):
+            spouse_list.append(str(spouse[0].uri).rsplit('/', 1)[-1])
+        return spouse_list
+
     def get_parents_of_person(self, person_id):
         parents_list = list()
         for parent in self.connection.cypher.stream("MATCH p=(r:Person)-[:CHILD_OF]->(q:Person) WHERE ID(r) = {} RETURN q".
                                   format(person_id)):
+            parents_list.append(str(parent[0].uri).rsplit('/', 1)[-1])
+        return parents_list if parents_list else False
+
+    def get_children_of_person(self, person_id):
+        parents_list = list()
+        for parent in self.connection.cypher.stream(
+                "MATCH p=(r:Person)<-[:CHILD_OF]-(q:Person) WHERE ID(r) = {} RETURN q".
+                        format(person_id)):
             parents_list.append(str(parent[0].uri).rsplit('/', 1)[-1])
         return parents_list if parents_list else False
 
