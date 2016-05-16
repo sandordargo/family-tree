@@ -21,13 +21,39 @@ class HorizontalSorter(object):
         # TODO make sure that between siblings there are nobody else only spouses
         self.person_horizontal_position_dict = self.assign_random_x_positions()
         self.position_person_dict = self.build_position_person_dict()
-        self.put_children_under_parents()
+        self.put_siblings_next_each_other_bottom_up()
+        self.put_parents_above_their_children()
         self.move_married_people_next_to_each_other()
-        self.put_children_under_parents()
+
+        # self.put_children_under_parents()
+        # self.move_married_people_next_to_each_other()
+        # self.put_children_under_parents()
 
         print(self.person_horizontal_position_dict)
 
+    def put_siblings_next_each_other_bottom_up(self):
+        for level in level_person_dict:
+            if two persons are siblings:
+                move second to the first, by two
+        pass
+
+    def put_parents_above_their_children(self):
+        for youngest_level in level_person_dict:
+            for person in persons:
+                if person has parent:
+                    move parents person, person + 1
+
     def move_married_people_next_to_each_other(self):
+        for inner_level in self.level_person_dict:
+            for relationship in self.edges:
+                if relationship['type'] == 'MARRIED' and relationship['source'] in self.level_person_dict[
+                    inner_level] and \
+                                relationship['target'] in self.level_person_dict[inner_level]
+                    and abs(position of person1 - position of person2) != 1 :
+                    new_position = self.person_horizontal_position_dict[relationship['source']] + 1
+                    self.move_person_on_horizontal_axis_to_position_spouse(relationship['target'], new_position)
+
+        def move_married_people_next_to_each_other(self):
         for inner_level in self.level_person_dict:
             for relationship in self.edges:
                 if relationship['type'] == 'MARRIED' and relationship['source'] in self.level_person_dict[
