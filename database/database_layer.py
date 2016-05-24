@@ -139,12 +139,12 @@ class DatabaseConnection(object):
         return parents_list if parents_list else False
 
     def get_children_of_person(self, person_id):
-        parents_list = list()
+        children_list = list()
         for parent in self.connection.cypher.stream(
                 "MATCH p=(r:Person)<-[:CHILD_OF]-(q:Person) WHERE ID(r) = {} RETURN q".
                         format(person_id)):
-            parents_list.append(str(parent[0].uri).rsplit('/', 1)[-1])
-        return parents_list if parents_list else False
+            children_list.append(str(parent[0].uri).rsplit('/', 1)[-1])
+        return children_list if children_list else False
 
 # dc = DatabaseConnection()
 # dc.add_person("CHMARA OdOn", 1907)

@@ -27,6 +27,9 @@ class FamilyTree(object):
             new_person_node.label = node.name
             new_person_node.children = self.db.get_child_generations_for_person(node.id)
             new_person_node.parents = self.db.get_parent_generations_for_person(node.id)
+            for parent in new_person_node.parents:
+                if self.db.get_children_of_person(parent):
+                    new_person_node.siblings.append(self.db.get_children_of_person(parent))
             person_nodes[node.id] = new_person_node
         return persons
 

@@ -38,14 +38,22 @@ class HorizontalSorter(object):
         for level in self.level_person_dict:
             for person in self.level_person_dict[level]:
                 siblings_positions = []
-                for sibling in self.person_dictionary[person].siblings:
-                    siblings_positions.append((self.person_dictionary[sibling].horizontal_position,
-                                               self.person_dictionary[sibling].person_id))
+                siblings_positions.append((self.person_dictionary[int(person)].horizontal_position,
+                                               self.person_dictionary[int(person)].person_id))
+                for sibling in self.person_dictionary[int(person)].siblings:
+                    print('sibling {}'.format(sibling))
+                    siblings_positions.append((self.person_dictionary[int(sibling)].horizontal_position,
+                                               self.person_dictionary[int(sibling)].person_id))
                 siblings_positions.sort()
-                for num in range(0, len(siblings_positions) - 1):
-                    if siblings_positions[num][0] - siblings_positions[num + 1][0] != 2:
-                        self.move_person_on_horizontal_axis_to_position(siblings_positions[num + 1][0],
-                                                                        siblings_positions[num][1] + 2)
+                print('siblings_position {}'.format(siblings_positions))
+                if len(siblings_positions) > 1:
+                    for num in range(0, len(siblings_positions)-1):
+                        print ('mys {}'.format(siblings_positions))
+                        print('num {}'.format(num))
+                        if siblings_positions[num][0] - siblings_positions[num + 1][0] != 2:
+                            print(siblings_positions[num][0])
+                            self.move_person_on_horizontal_axis_to_position(siblings_positions[num + 1][1],
+                                                                            siblings_positions[num][0] + 2)
 
     def move_person_on_horizontal_axis_to_position(self, person_id, new_position):
         """
@@ -146,9 +154,9 @@ class HorizontalSorter(object):
         Moves a person to the given position.
         If there is already someone at that position, he will be moved with the same number of positions.
         """
-        old_position = self.person_horizontal_position_dict[person_id]
+        old_position = self.person_horizontal_position_dict[str(person_id)]
         change = new_position - old_position
-        self.move_person_on_horizontal_axis(person_id, change)
+        self.move_person_on_horizontal_axis(str(person_id), change)
 
     #
     # def move(self, person_id, change):
