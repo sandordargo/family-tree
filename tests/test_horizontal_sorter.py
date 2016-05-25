@@ -149,6 +149,66 @@ class TestHorizontalSorter(unittest.TestCase):
 
         self.assertEqual(expected_difference, retrieved_difference)
 
+    def test_put_siblings_next_each_other_bottom_up_three_bros(self):
+
+        position_person_dict = {1: ['5'], 2: ['1', '2'], 3: ['4', '6'], 5: ['3']}
+        person_level_dict = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 3, '6': 3}
+
+        person_1 = person_node.PersonNode()
+        person_1.person_id = 1
+        person_1.horizontal_position = 2
+
+        person_2 = person_node.PersonNode()
+        person_2.person_id = 2
+        person_2.horizontal_position = 2
+
+        person_3 = person_node.PersonNode()
+        person_3.person_id = 3
+        person_3.horizontal_position = 3
+        person_3.siblings = ['5', '6']
+
+        person_4 = person_node.PersonNode()
+        person_4.person_id = 4
+        person_4.horizontal_position = 4
+
+        person_5 = person_node.PersonNode()
+        person_5.person_id = 5
+        person_5.horizontal_position = 1
+        person_5.siblings = ['3', '6']
+
+        person_6 = person_node.PersonNode()
+        person_6.person_id = 6
+        person_6.horizontal_position = 3
+        person_6.siblings = ['3', '5']
+
+        person_nodes = dict()
+        person_nodes[1] = person_1
+        person_nodes[2] = person_2
+        person_nodes[3] = person_3
+        person_nodes[4] = person_4
+        person_nodes[5] = person_5
+        person_nodes[6] = person_6
+
+        edges = {}
+
+        sorter = horizontal_sorter.HorizontalSorter(person_level_dict, edges, person_nodes)
+        sorter.person_horizontal_position_dict = {'1': 2, '3': 5, '2': 2, '5': 1, '4': 3, '6': 3}
+        sorter.position_person_dict = position_person_dict
+
+        sorter.put_siblings_next_each_other_bottom_up()
+
+        expected_differences = [2, 2, 4]
+        retrieved_differences = list()
+        retrieved_differences.append(abs(
+            sorter.person_horizontal_position_dict['5'] - sorter.person_horizontal_position_dict['3']))
+        retrieved_differences.append(abs(
+            sorter.person_horizontal_position_dict['6'] - sorter.person_horizontal_position_dict['3']))
+        retrieved_differences.append(abs(
+            sorter.person_horizontal_position_dict['6'] - sorter.person_horizontal_position_dict['5']))
+        retrieved_differences.sort()
+
+        self.assertEqual(expected_differences, retrieved_differences)
+
 
 
     def not_test_are_there_persons_at_the_same_positions_false(self):
