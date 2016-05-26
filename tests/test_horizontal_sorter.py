@@ -26,6 +26,34 @@ class TestHorizontalSorter(unittest.TestCase):
 
         return person_nodes
 
+    @staticmethod
+    def assert_list_differences(list_to_check, difference_between_adjacent_elements):
+        """
+        True if the difference between each adjacent element in the given one
+        There should be len(list)-1 of occurences of the given difference if we check all the possible combinationss
+        between the passed positions
+        This is not efficient for long lists, but we don't expect to have so many siblings
+        :param list_to_check: List of horizontal positions
+        :param difference_between_adjacent_elements:
+        :return: True if assertion is valid, False otherwise
+        """
+        differences = dict()
+        for n in range(0, len(list_to_check), 1):
+            for m in range(1, len(list_to_check[n:]), 1):
+                diff = abs(list_to_check[n] - list_to_check[n+m])
+                if diff in differences:
+                    differences[diff] += 1
+                else:
+                    differences[diff] = 1
+
+        print(differences)
+        difference_existance = 1
+        for n in range(len(list_to_check) - 1, 0, -1):
+            if differences[n * difference_between_adjacent_elements] != difference_existance:
+                return False
+            difference_existance += 1
+        return True
+
     def test_move(self):
         position_person_dict = {1: ['5', '3'], 2: ['1', '2'], 3: ['4']}
         person_level_dict = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 3}
@@ -80,9 +108,14 @@ class TestHorizontalSorter(unittest.TestCase):
         sorter.put_siblings_next_each_other_bottom_up()
 
         expected_difference = 2
-        retrieved_difference = abs(sorter.person_horizontal_position_dict['5'] - sorter.person_horizontal_position_dict['3'])
+        positions_to_check = list()
+        positions_to_check.append(sorter.person_horizontal_position_dict['5'])
+        positions_to_check.append(sorter.person_horizontal_position_dict['3'])
+        self.assertTrue(self.assert_list_differences(positions_to_check, expected_difference))
 
-        self.assertEqual(expected_difference, retrieved_difference)
+        #retrieved_difference = abs(sorter.person_horizontal_position_dict['5'] - sorter.person_horizontal_position_dict['3'])
+
+        #self.assertEqual(expected_difference, retrieved_difference)
 
     def test_put_siblings_next_each_other_bottom_up_three_bros(self):
 
@@ -102,17 +135,24 @@ class TestHorizontalSorter(unittest.TestCase):
 
         sorter.put_siblings_next_each_other_bottom_up()
 
-        expected_differences = [2, 2, 4]
-        retrieved_differences = list()
-        retrieved_differences.append(abs(
-            sorter.person_horizontal_position_dict['5'] - sorter.person_horizontal_position_dict['3']))
-        retrieved_differences.append(abs(
-            sorter.person_horizontal_position_dict['6'] - sorter.person_horizontal_position_dict['3']))
-        retrieved_differences.append(abs(
-            sorter.person_horizontal_position_dict['6'] - sorter.person_horizontal_position_dict['5']))
-        retrieved_differences.sort()
+        # expected_differences = [2, 2, 4]
+        # retrieved_differences = list()
+        # retrieved_differences.append(abs(
+        #     sorter.person_horizontal_position_dict['5'] - sorter.person_horizontal_position_dict['3']))
+        # retrieved_differences.append(abs(
+        #     sorter.person_horizontal_position_dict['6'] - sorter.person_horizontal_position_dict['3']))
+        # retrieved_differences.append(abs(
+        #     sorter.person_horizontal_position_dict['6'] - sorter.person_horizontal_position_dict['5']))
+        # retrieved_differences.sort()
 
-        self.assertEqual(expected_differences, retrieved_differences)
+        expected_difference = 2
+        positions_to_check = list()
+        positions_to_check.append(sorter.person_horizontal_position_dict['5'])
+        positions_to_check.append(sorter.person_horizontal_position_dict['3'])
+        positions_to_check.append(sorter.person_horizontal_position_dict['6'])
+        self.assertTrue(self.assert_list_differences(positions_to_check, expected_difference))
+
+        #self.assertEqual(expected_differences, retrieved_differences)
 
     def not_test_are_there_persons_at_the_same_positions_false(self):
         position_person_dict = {1: ['5', '3'], 2: ['1', '2'], 3: ['4']}
