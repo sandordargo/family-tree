@@ -110,6 +110,7 @@ def add_new_relationship():
 @app.route("/graph.html", methods=['GET'])
 def show_graph():
     my_family_tree = family_tree.FamilyTree()
+    print(my_family_tree.get_tree_as_json())
     family_tree_json_dump = json.dumps(my_family_tree.get_tree_as_json())
     return render_template('graph.html', json_to_display=family_tree_json_dump)
 

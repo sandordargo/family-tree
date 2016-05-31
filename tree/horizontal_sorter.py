@@ -5,14 +5,18 @@ import person_node
 
 class HorizontalSorter(object):
     def __init__(self, levels_on_tree, edges, nodes):
+        print('init1')
         self.db = database_layer.DatabaseConnection()
         self.person_level_tree = levels_on_tree
         self.edges = edges
         self.person_dictionary = nodes
+        print('init2')
 
         self.person_horizontal_position_dict = dict()
         self.position_person_dict = dict()
         self.level_person_dict = self.build_level_person_dict()
+
+        print('init3')
 
     def get_person_horizontal_position_dict(self):
         return self.person_horizontal_position_dict
@@ -22,11 +26,18 @@ class HorizontalSorter(object):
         # TODO every children should be under his parents or spouse's parents
         # TODO siblings next to each other (even)
         # TODO make sure that between siblings there are nobody else only spouses
+        print('1')
         self.person_horizontal_position_dict = self.assign_random_x_positions()
+        print(self.person_horizontal_position_dict)
+        print('2')
         self.position_person_dict = self.build_position_person_dict()
+        print('3')
         self.put_siblings_next_each_other_bottom_up()
+        print('4')
         self.put_parents_above_their_children()
+        print('5')
         self.move_married_people_next_to_each_other()
+        print('6')
 
         # self.put_children_under_parents()
         # self.move_married_people_next_to_each_other()
@@ -35,16 +46,34 @@ class HorizontalSorter(object):
         print(self.person_horizontal_position_dict)
 
     def put_siblings_next_each_other_bottom_up(self):
+        print('sibl enter')
+        print(self.level_person_dict)
         for level in self.level_person_dict:
+            print('sibl loop enter')
             for person in self.level_person_dict[level]:
+                print('sibl loop2 enter')
                 siblings_positions = []
+                print('sibl loop2 1')
+                print(person)
+                print(type(person))
+                print(self.person_dictionary)
+                print(self.person_dictionary[int(person)].horizontal_position)
+                print(self.person_dictionary[int(person)].person_id)
                 siblings_positions.append((self.person_dictionary[int(person)].horizontal_position,
                                                self.person_dictionary[int(person)].person_id))
-                for sibling in self.person_dictionary[int(person)].siblings:
-                    print('sibling {}'.format(sibling))
-                    siblings_positions.append((self.person_dictionary[int(sibling)].horizontal_position,
-                                               self.person_dictionary[int(sibling)].person_id))
+                print('sibl loop2 2')
+                if self.person_dictionary[int(person)].siblings:
+                    print(self.person_dictionary[int(person)].siblings)
+                    for sibling in self.person_dictionary[int(person)].siblings:
+                        print('sibling {}'.format(sibling))
+                        print(self.person_dictionary)
+                        print(self.person_dictionary[int(sibling)].horizontal_position)
+                        print(self.person_dictionary[int(sibling)].person_id)
+                        siblings_positions.append((self.person_dictionary[int(sibling)].horizontal_position,
+                                                   self.person_dictionary[int(sibling)].person_id))
+                print('sibl loop2 3')
                 siblings_positions.sort()
+                print('sibl loop2 4')
                 print('siblings_position {}'.format(siblings_positions))
                 if len(siblings_positions) > 1:
                     for num in range(0, len(siblings_positions)-1):
@@ -54,6 +83,7 @@ class HorizontalSorter(object):
                             print(siblings_positions[num][0])
                             self.move_person_on_horizontal_axis_to_position(siblings_positions[num + 1][1],
                                                                             siblings_positions[num][0] + 2)
+        print('sibl leave')
 
     def move_person_on_horizontal_axis_to_position(self, person_id, new_position):
         """
@@ -98,11 +128,27 @@ class HorizontalSorter(object):
         # self.move_spouse_if_any(person_id, change)
         # self.move_children_if_any(person_id, change)
 
-    # def put_parents_above_their_children(self):
-    #     for youngest_level in level_person_dict:
-    #         for person in persons:
-    #             if person has parent:
-    #                 move parents person, person + 1
+    def put_parents_above_their_children(self):
+        # TODO average children positions for parents
+        print('put parents enter')
+        self.level_person_dict.keys().sort(reverse=True)
+        print(self.level_person_dict)
+        for youngest_level in self.level_person_dict:
+            print('put parents outer loop enter')
+            for person in self.level_person_dict[youngest_level]:
+                print('put parents inner loop enter')
+                print(person)
+                #print(self.person_dictionary)
+                print(self.person_dictionary[int(person)])
+                print(self.person_dictionary[int(person)].parents)
+                if self.person_dictionary[int(person)].parents:
+                    print('put parents if enter')
+                    for parent in self.person_dictionary[int(person)].parents:
+                        print('put parents very inner enter')
+                        self.move_person_on_horizontal_axis_to_position(parent,
+                                                                        self.person_dictionary[int(person)].
+                                                                        horizontal_position)
+        print('put parents leave')
     #
     # def move_married_people_next_to_each_other(self):
     #     for inner_level in self.level_person_dict:
@@ -228,7 +274,9 @@ class HorizontalSorter(object):
             number_of_persons = len(self.level_person_dict[level])
             random_positions = random.sample(range(0, 2 * number_of_persons + 1, 2), number_of_persons)
             for person in self.level_person_dict[level]:
-                person_horizontal_position_dict[person] = random_positions.pop()
+                random_position = random_positions.pop()
+                person_horizontal_position_dict[person] = random_position
+                self.person_dictionary[int(person)].horizontal_position = random_position
         return person_horizontal_position_dict
 
     def build_level_person_dict(self):
