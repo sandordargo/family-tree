@@ -2,6 +2,7 @@ from database import database_layer
 from tree import vertical_sorter, horizontal_sorter
 import person_node
 
+
 class FamilyTree(object):
 
     def __init__(self):
