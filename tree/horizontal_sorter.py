@@ -19,15 +19,13 @@ class HorizontalSorter(object):
     def sort_horizontal(self):
         # TODO add tests
         # TODO every children should be under his parents or spouse's parents
-        # TODO siblings next to each other (even)
         # TODO make sure that between siblings there are nobody else only spouses
-        self.person_horizontal_position_dict = self.assign_random_x_positions()  # Should be fine
-        self.position_person_dict = self.build_position_person_dict()  # Should be fine
-        self.put_siblings_next_each_other_bottom_up()  # Should be fine
+        self.person_horizontal_position_dict = self.assign_random_x_positions()
+        self.position_person_dict = self.build_position_person_dict()
+        self.put_siblings_next_each_other_bottom_up()
         self.put_parents_above_their_children()
         self.move_married_people_next_to_each_other()
         # TODO flat repo horizontally
-        # TODO make sure, no one is between the siblings, unless a spouse
 
     def put_siblings_next_each_other_bottom_up(self):
         for level in self.level_person_dict:
