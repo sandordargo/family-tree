@@ -1,6 +1,5 @@
 import random
 from database import database_layer
-import person_node
 
 
 class HorizontalSorter(object):
@@ -49,9 +48,9 @@ class HorizontalSorter(object):
         Moves a person to the given position.
         If there is already someone at that position, he will be moved with the same number of positions.
         """
-        old_position = self.person_dictionary[person_id].horizontal_position
+        old_position = self.person_horizontal_position_dict[str(person_id)]
         change = new_position - old_position
-        self.move_person_on_horizontal_axis(person_id, change)
+        self.move_person_on_horizontal_axis(str(person_id), change)
 
     def move(self, person_id, change):
         if change == 0:
@@ -84,8 +83,6 @@ class HorizontalSorter(object):
         If there is already someone at that position, he will be moved with the same number of positions.
         """
         self.move(person_id, change)
-        # self.move_spouse_if_any(person_id, change)
-        # self.move_children_if_any(person_id, change)
 
     def put_parents_above_their_children(self):
         # TODO average children positions for parents
@@ -118,18 +115,6 @@ class HorizontalSorter(object):
                             new_position = self.person_horizontal_position_dict[relationship['target']] + 1
                             self.move_person_on_horizontal_axis_to_position_spouse(relationship['source'], new_position)
 
-    def put_children_under_parents(self):
-        # TODO a child can go into two children of someone else. it should not happen
-        # proposal: the new child should move and his parents!
-        for level in self.level_person_dict:
-            for person in self.level_person_dict[level]:
-                if self.db.get_parents_of_person(person):
-                    parents = self.db.get_parents_of_person(person)
-                    new_position = 0
-                    for parent in parents:
-                        new_position = self.person_horizontal_position_dict[parent]
-                    self.move_person_on_horizontal_axis_to_position(person, new_position)
-
     def move_person_on_horizontal_axis_to_position_spouse(self, person_id, new_position):
         """
         Moves a person to the given position.
@@ -138,25 +123,6 @@ class HorizontalSorter(object):
         old_position = self.person_horizontal_position_dict[person_id]
         change = new_position - old_position
         self.move(person_id, change)
-
-    def move_person_on_horizontal_axis_to_position(self, person_id, new_position):
-        """
-        Moves a person to the given position.
-        If there is already someone at that position, he will be moved with the same number of positions.
-        """
-        old_position = self.person_horizontal_position_dict[str(person_id)]
-        change = new_position - old_position
-        self.move_person_on_horizontal_axis(str(person_id), change)
-
-    def move_spouse_if_any(self, person_id, change):
-        if self.db.is_married(person_id):
-            for spouse in self.db.get_spouses_of_person(person_id):
-                self.move(spouse, change)
-
-    def move_children_if_any(self, person_id, change):
-        if self.db.get_children_of_person(person_id):
-            for child in self.db.get_children_of_person(person_id):
-                self.move_person_on_horizontal_axis(child, change)
 
     def build_position_person_dict(self):
         """
