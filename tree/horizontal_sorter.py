@@ -112,8 +112,13 @@ class HorizontalSorter(object):
                                 relationship['target'] in self.level_person_dict[inner_level]:
                     if abs(self.person_horizontal_position_dict[relationship['source']] -
                            self.person_horizontal_position_dict[relationship['target']]) != 1:
-                        new_position = self.person_horizontal_position_dict[relationship['source']] + 1
-                        self.move_person_on_horizontal_axis_to_position_spouse(relationship['target'], new_position)
+                        if len(self.person_dictionary[int(relationship['source'])].siblings) >\
+                           len(self.person_dictionary[int(relationship['target'])].siblings):
+                            new_position = self.person_horizontal_position_dict[relationship['source']] + 1
+                            self.move_person_on_horizontal_axis_to_position_spouse(relationship['target'], new_position)
+                        else:
+                            new_position = self.person_horizontal_position_dict[relationship['target']] + 1
+                            self.move_person_on_horizontal_axis_to_position_spouse(relationship['source'], new_position)
 
     def put_children_under_parents(self):
         # TODO a child can go into two children of someone else. it should not happen
