@@ -39,10 +39,13 @@ class DatabaseConnection(object):
 
     def update_person(self, person_id, person_properties):
         node_to_update = self.get_neo4j_person(person_id)
+        keys = node_to_update.properties.keys()
+        for key in keys:
+            del node_to_update.properties[key]
         if person_properties:
             for key in person_properties:
                 node_to_update.properties[key] = person_properties[key]
-            node_to_update.push()
+        node_to_update.push()
 
     def update_relationship(self, relationship_id, relationship_properties):
         relationship_to_update = self.get_neo4j_relationship(relationship_id)

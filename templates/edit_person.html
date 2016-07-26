@@ -8,11 +8,13 @@
             <dl>
             <table id="properties" border="1" style="width:100%">
                     <tr>
-                        <th>Property name</th><th>Property value</th>
+                        <th>Property name</th><th>Property value</th><th></th>
                     </tr>
                     {% for property in person.properties %}
                     <tr>
-                        <td>{{property}}</td><td><input name='{{property}}' value='{{person.properties[property]}}'></td>
+                        <td>{{property}}</td>
+                        <td><input name='{{property}}' value='{{person.properties[property]}}'></td>
+                        <td><button type="button" onclick="markRowForDeletion(this)"> Delete row </button></td>
                     </tr>
                     {% endfor %}
 
