@@ -49,10 +49,13 @@ class DatabaseConnection(object):
 
     def update_relationship(self, relationship_id, relationship_properties):
         relationship_to_update = self.get_neo4j_relationship(relationship_id)
+        keys = relationship_to_update.properties.keys()
+        for key in keys:
+            del relationship_to_update.properties[key]
         if relationship_properties:
             for key in relationship_properties:
                 relationship_to_update.properties[key] = relationship_properties[key]
-            relationship_to_update.push()
+        relationship_to_update.push()
 
     def get_neo4j_person(self, person_id):
         single_node_list = self.connection.cypher.stream("MATCH(p:Person) where ID(p) = {} RETURN p".format(person_id))

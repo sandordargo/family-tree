@@ -20,7 +20,9 @@
                     </tr>
                     {% for property in relationship.properties %}
                     <tr>
-                        <td>{{property}}</td><td><input name='{{property}}' value='{{relationship.properties[property]}}'></td>
+                        <td>{{property}}</td>
+                        <td><input name='{{property}}' value='{{relationship.properties[property]}}'></td>
+                        <td><button type="button" onclick="markRowForDeletion(this)"> Delete row </button></td>
                     </tr>
                     {% endfor %}
 
