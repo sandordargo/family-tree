@@ -1,12 +1,12 @@
 import json
 
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, flash, make_response
 
 from database import database_layer
 from tree import family_tree
 
 app = Flask(__name__)
-
+app.secret_key = 'some_secret'
 APPLICATION_NAME = "Family Tree Application"
 
 
@@ -23,6 +23,7 @@ def add_new_person():
         db = database_layer.DatabaseConnection()
         db.add_person(person_name=request.form['name'],
                       year_of_birth=request.form['born'])
+        flash('{} has been added to the family tree'.format(request.form['name']))
         return redirect(url_for('show_tree'))
     else:
         return render_template('new_person.html')
@@ -30,12 +31,14 @@ def add_new_person():
 
 @app.route("/persons/<int:person_id>/delete/", methods=['GET', 'POST'])
 def delete_person(person_id):
+    db = database_layer.DatabaseConnection()
+    person = db.get_person(person_id)
     if request.method == 'POST':
-        db = database_layer.DatabaseConnection()
         db.remove_person(person_id)
+        flash('Person with {} has been deleted from the family tree'.format(person.name))
         return redirect(url_for('show_tree'))
     else:
-        return render_template('delete_person.html', person_id=person_id)
+        return render_template('delete_person.html', person=person)
 
 
 @app.route('/persons/<int:person_id>/edit/', methods=['GET', 'POST'])
@@ -54,6 +57,7 @@ def edit_person(person_id):
                 properties[element] = request.form[element]
         db.update_person(person_id=person_id,
                          person_properties=properties)
+        flash('{} has been edited'.format(request.form['name']))
         return redirect(url_for('show_tree'))
     else:
         return render_template('edit_person.html', person=db.get_person(person_id))
@@ -64,6 +68,8 @@ def delete_relationship(relationship_id):
     if request.method == 'POST':
         db = database_layer.DatabaseConnection()
         db.remove_relationship(relationship_id)
+        start_name, end_name = get_start_name_end_name(relationship_id)
+        flash('Relationship between {} and {} has been deleted'.format(start_name, end_name))
         return redirect(url_for('show_tree'))
     else:
         return render_template('delete_relationship.html', relationship_id=relationship_id)
@@ -85,6 +91,8 @@ def edit_relationship(relationship_id):
                 properties[element] = request.form[element]
         db.update_relationship(relationship_id=relationship_id,
                                relationship_properties=properties)
+        start_name, end_name = get_start_name_end_name(relationship_id)
+        flash('Relationship between {} and {} has been edited'.format(start_name, end_name))
         return redirect(url_for('show_tree'))
     else:
         print(str(db.get_relationship(relationship_id).start_node.uri).rsplit('/', 1)[-1])
@@ -102,6 +110,9 @@ def add_new_relationship():
         db.add_relationship(start_id=request.form['start_node'],
                             end_id=request.form['end_node'],
                             relationship_type=request.form['type'])
+        start_name = db.get_person(request.form['start_node']).name
+        end_name = db.get_person(request.form['end_node']).name
+        flash('Relationship between {} and {} has been added'.format(start_name, end_name))
         return redirect(url_for('show_tree'))
     else:
         return render_template('new_relationship.html', persons=db.get_all_persons())
@@ -115,7 +126,15 @@ def show_graph():
     return render_template('graph.html', json_to_display=family_tree_json_dump)
 
 
+def get_start_name_end_name(relationship_id):
+    db = database_layer.DatabaseConnection()
+    relationship = db.get_relationship(relationship_id)
+    start_name = db.get_person(relationship.start_node).name
+    end_name = db.get_person(relationship.end_node).name
+    return start_name, end_name
+
 if __name__ == "__main__":
-    app.run()
+    app.debug = True
+    app.run(host='0.0.0.0', port=5000)
 
 
