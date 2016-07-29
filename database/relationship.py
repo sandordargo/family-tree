@@ -13,3 +13,30 @@ class Relationship(object):
         relationship_as_dict['target'] = str(self.end_node.uri).rsplit('/', 1)[-1]
         relationship_as_dict['type'] = self.relationship_type
         return relationship_as_dict
+
+    def get_formatted_person(self, person_json_string):
+        start_node_as_str = person_json_string
+        name_tag = 'name:"'
+        name = start_node_as_str[start_node_as_str.find(name_tag) + len(name_tag):-3]
+
+        birth_tag = 'born:'
+        birth_tag_start = start_node_as_str.find(birth_tag) + len(birth_tag)
+        birth_tag_end = start_node_as_str.find(',', birth_tag_start)
+        birth = start_node_as_str[birth_tag_start:birth_tag_end]
+        birth = birth.replace('"',"")
+
+        death_tag = 'died:'
+        death_tag_start = start_node_as_str.find(death_tag) + len(death_tag)
+        death = ""
+        if death_tag_start != -1 + len(death_tag):
+            death_tag_end = start_node_as_str.find(',', death_tag_start)
+            death = start_node_as_str[death_tag_start:death_tag_end]
+        death = death.replace('"', "")
+
+        return '{name} ({birth} - {death})'.format(name=name, birth=birth, death=death)
+
+    def get_formatted_start(self):
+        return self.get_formatted_person(str(self.start_node))
+
+    def get_formatted_end(self):
+        return self.get_formatted_person(str(self.end_node))

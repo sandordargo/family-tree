@@ -112,7 +112,7 @@ def add_new_relationship():
                             relationship_type=request.form['type'])
         start_name = db.get_person(request.form['start_node']).name
         end_name = db.get_person(request.form['end_node']).name
-        flash('Relationship between {} and {} has been added'.format(start_name, end_name))
+        flash('Relationship between {} and {} has been addedre'.format(start_name, end_name))
         return redirect(url_for('show_tree'))
     else:
         return render_template('new_relationship.html', persons=db.get_all_persons())

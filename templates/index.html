@@ -1,56 +1,84 @@
+<!DOCTYPE html>
 <html>
-    <body>
-        <h1>
-            Persons
-        </h1>
-<div class = 'flash'>
-		      {% with messages = get_flashed_messages() %}
-      {% if messages %}
+<head>
+    <title>Family tree</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
-        <ul>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class='flash'>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+    <ul>
         {% for message in messages %}
-            <li> <strong> {{ message }} </strong> </li>
+        <li><strong> {{ message }} </strong></li>
         {% endfor %}
-        </ul>
-        {% endif %}
+    </ul>
+    {% endif %}
     {% endwith %}
 
 </div>
 
+<div class="row">
 
+    <div class="col-md-2">
+        <a href='{{url_for('add_new_person') }}'>Add New Person</a> </br>
+        <a href='{{url_for('add_new_relationship') }}'>Add New Relationship</a> </br>
+    </div>
+    <div class="col-md-4">
+        <h1>
+            Persons
+        </h1>
         {% for person in persons %}
         <!--<div>-->
-            <p>
-                {{person.name}}</br>
-                {{person.id}}</br>
-                {{person.birth}}</br>
-                {% for property in person.properties %}
-                    {{property}} : {{person.properties[property]}}</br>
-                {% endfor %}
-                <a href="{{ url_for('edit_person', person_id=person.id) }}">Edit</a></br>
-                <a href="{{ url_for('delete_person', person_id=person.id) }}">Delete</a></br>
-            </p>
+        <p>
+            Name: {{person.name}}</br>
+            Birth date: {{person.birth}}</br>
+            {% for property in person.properties %}
+            {% if property not in ["name", "birth", "born"] %}
+            {{property}} : {{person.properties[property]}}</br>
+            {% endif %}
+            {% endfor %}
+            Database ID: {{person.id}}</br>
+        <ul class="nav nav-pills">
+            <li><a href="{{ url_for('edit_person', person_id=person.id) }}">Edit</a></li>
+            <li><a href="{{ url_for('delete_person', person_id=person.id) }}">Delete</a></li>
+        </ul>
+        </p>
         <!--</div>-->
         {% endfor %}
+    </div>
 
+    <div class="col-md-4">
         <h1>
             Relationships
         </h1>
         {% for relation in relations %}
         <!--<div>-->
-            <p>
-                {{relation.start_node}}</br>
-                {{relation.end_node}}</br>
-                {{relation.type}}</br>
-                {% for property in relation.properties %}
-                    {{property}} : {{relation.properties[property]}}</br>
-                {% endfor %}
-                <a href="{{ url_for('edit_relationship', relationship_id=relation.relationship_id) }}">Edit</a></br>
-                <a href="{{ url_for('delete_relationship', relationship_id=relation.relationship_id) }}">Delete</a></br>
-            </p>
+        <p>
+            {{relation.get_formatted_start()}}</br>
+            {{relation.relationship_type}}</br>
+            {{relation.get_formatted_end()}}</br>
+            {% for property in relation.properties %}
+            {{property}} : {{relation.properties[property]}}</br>
+            {% endfor %}
+        <ul class="nav nav-pills">
+            <li><a href="{{ url_for('edit_relationship', relationship_id=relation.relationship_id) }}">Edit</a></li>
+            <li><a href="{{ url_for('delete_relationship', relationship_id=relation.relationship_id) }}">Delete</a></li>
+        </ul>
+        </p>
         <!--</div>-->
         {% endfor %}
-        <a href = '{{url_for('add_new_person') }}'>Add New Person</a>
-        <a href = '{{url_for('add_new_relationship') }}'>Add New Relationship</a>
-    </body>
+    </div>
+</div>
+
+</body>
 </html>
