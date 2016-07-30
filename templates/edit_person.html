@@ -1,30 +1,39 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <script src="{{ url_for('static', filename='table_handler.js') }}"></script>
-    </head>
-    <body>
-        <h1>Edit Person</h1>
-        <form action="{{ url_for('edit_person', person_id=person.id)}}" method='post'>
-            <dl>
-            <table id="properties" border="1" style="width:100%">
-                    <tr>
-                        <th>Property name</th><th>Property value</th><th></th>
-                    </tr>
-                    {% for property in person.properties %}
-                    <tr>
-                        <td>{{property}}</td>
-                        <td><input name='{{property}}' value='{{person.properties[property]}}'></td>
-                        <td><button type="button" onclick="markRowForDeletion(this)"> Delete row </button></td>
-                    </tr>
-                    {% endfor %}
+<head>
+    <title>Family tree</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='table_handler.js') }}"></script>
+</head>
+<body>
+<div class="col-md6">
+    <h1>Edit Person</h1>
+    <form action="{{ url_for('edit_person', person_id=person.id)}}" method='post'>
+        <dl>
+        <table id="properties" border="1" style="width:auto">
+                <tr>
+                    <th>Property name</th><th>Property value</th><th></th>
+                </tr>
+                {% for property in person.properties %}
+                <tr>
+                    <td>{{property}}</td>
+                    <td><input name='{{property}}' value='{{person.properties[property]}}'></td>
+                    <td><button class="btn btn-danger" type="button" onclick="markRowForDeletion(this)"> Delete row </button></td>
+                </tr>
+                {% endfor %}
 
-                </table>
-                <button type="button" onclick="add_row()">
-                    Add row
-                </button>
-            <input type='submit' value='Edit'>
-            </dl>
-        </form>
-        <a href = "{{url_for('show_tree')}}">Cancel</a>
-    </body>
+            </table>
+            <button class="btn btn-info" type="button" onclick="add_row()">Add row</button>
+        <input class="btn btn-success" type='submit' value='Submit'>
+        </dl>
+    </form>
+    <a class="btn btn-warning" href = "{{url_for('show_tree')}}">Cancel</a>
+    </div>
+</body>
 </html>

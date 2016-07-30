@@ -17,12 +17,12 @@ function add_row() {
         next_prop_number = parseInt(last_prop_number) + 1;
         cell1.innerHTML = "<input name='propertyname".concat(next_prop_number, "' value='propertynamevalue", next_prop_number, "'>");
         cell2.innerHTML = "<input name='propertyvalue".concat(next_prop_number, "' value='propertyvaluevalue", next_prop_number, "'>");
-        cell3.innerHTML = "<button type='button' onclick='markRowForDeletion(this)'> Delete row </button>";
+        cell3.innerHTML = "<button class='btn btn-danger' type='button' onclick='markRowForDeletion(this)'> Delete row </button>";
     }
     else {
         cell1.innerHTML = "<input name='propertyname".concat(1, "' value='propertynamevalue", 1, "'>");
         cell2.innerHTML = "<input name='propertyvalue".concat(1, "' value='propertyvaluevalue", 1, "'>");
-        cell3.innerHTML = "<button type='button' onclick='markRowForDeletion(this)'> Delete row </button>";
+        cell3.innerHTML = "<button class='btn btn-danger' type='button' onclick='markRowForDeletion(this)'> Delete row </button>";
     }
 }
 
