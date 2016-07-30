@@ -40,3 +40,12 @@ class Relationship(object):
 
     def get_formatted_end(self):
         return self.get_formatted_person(str(self.end_node))
+
+    def get_formatted_relationship_type(self):
+        return Relationship.get_mapper()[self.relationship_type]
+
+    @staticmethod
+    def get_mapper():
+        return {"CHILD_OF": "IS CHILD OF",
+                "MARRIED": "GOT MARRIED TO"}
+

@@ -3,13 +3,15 @@
 <head>
     <title>Family tree</title>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
+
 
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <!-- Latest compiled JavaScript -->
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -30,31 +32,37 @@
 <div class="row">
 
     <div class="col-md-2">
-        <a href='{{url_for('add_new_person') }}'>Add New Person</a> </br>
-        <a href='{{url_for('add_new_relationship') }}'>Add New Relationship</a> </br>
+        <ul class="nav nav-pills" id="ranks">
+            <li><a class="btn btn-link" href='{{url_for('add_new_person') }}'>Add New Person</a></li>
+            <div class="clearfix"></div>
+            <li><a class="btn btn-link" href='{{url_for('add_new_relationship') }}'>Add New Relationship</a></li>
+            <div class="clearfix"></div>
+            <li><a class="btn btn-link" href='{{url_for('show_graph') }}'>Show tree</a></li>
+        </ul>
     </div>
     <div class="col-md-4">
         <h1>
             Persons
         </h1>
-        {% for person in persons %}
-        <!--<div>-->
-        <p>
-            Name: {{person.name}}</br>
-            Birth date: {{person.birth}}</br>
-            {% for property in person.properties %}
-            {% if property not in ["name", "birth", "born"] %}
-            {{property}} : {{person.properties[property]}}</br>
-            {% endif %}
+         {% for person in persons %}
+        <div class="panel" >
+                <p>
+                    <b>Name: {{person.name}}</b></br>
+                    Birth date: {{person.birth}}</br>
+                    {% for property in person.properties %}
+                    {% if property not in ["name", "birth", "born"] %}
+                    {{property}} : {{person.properties[property]}}</br>
+                    {% endif %}
+                    {% endfor %}
+                    Database ID: {{person.id}}</br>
+                <ul class="nav nav-pills">
+                    <li><a class="btn btn-link" href="{{ url_for('edit_person', person_id=person.id) }}">Edit</a></li>
+                    <li><a class="btn btn-link" href="{{ url_for('delete_person', person_id=person.id) }}">Delete</a></li>
+                </ul>
+                </p>
+            </div>
             {% endfor %}
-            Database ID: {{person.id}}</br>
-        <ul class="nav nav-pills">
-            <li><a href="{{ url_for('edit_person', person_id=person.id) }}">Edit</a></li>
-            <li><a href="{{ url_for('delete_person', person_id=person.id) }}">Delete</a></li>
-        </ul>
-        </p>
-        <!--</div>-->
-        {% endfor %}
+
     </div>
 
     <div class="col-md-4">
@@ -62,20 +70,20 @@
             Relationships
         </h1>
         {% for relation in relations %}
-        <!--<div>-->
-        <p>
-            {{relation.get_formatted_start()}}</br>
-            {{relation.relationship_type}}</br>
-            {{relation.get_formatted_end()}}</br>
-            {% for property in relation.properties %}
-            {{property}} : {{relation.properties[property]}}</br>
-            {% endfor %}
-        <ul class="nav nav-pills">
-            <li><a href="{{ url_for('edit_relationship', relationship_id=relation.relationship_id) }}">Edit</a></li>
-            <li><a href="{{ url_for('delete_relationship', relationship_id=relation.relationship_id) }}">Delete</a></li>
-        </ul>
-        </p>
-        <!--</div>-->
+        <div class="panel" >
+            <p>
+                {{relation.get_formatted_start()}}
+                <span class="badge"> {{relation.get_formatted_relationship_type()}} </span>
+                {{relation.get_formatted_end()}}</br>
+                {% for property in relation.properties %}
+                {{property}} : {{relation.properties[property]}}</br>
+                {% endfor %}
+            <ul class="nav nav-pills">
+                <li><a class="btn btn-link" href="{{ url_for('edit_relationship', relationship_id=relation.relationship_id) }}">Edit</a></li>
+                <li><a class="btn btn-link" href="{{ url_for('delete_relationship', relationship_id=relation.relationship_id) }}">Delete</a></li>
+            </ul>
+            </p>
+        </div>
         {% endfor %}
     </div>
 </div>
