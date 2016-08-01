@@ -1,24 +1,36 @@
+<!DOCTYPE html>
 <html>
-    <body>
-        <h1>New relationship</h1>
-        <form action="{{url_for('add_new_relationship')}}" method = 'post'>
-            <dl>
-                <select name="start_node">
-                    {% for person in persons %}
-                        <option value="{{ person.id }}">{{ person.name ~ " (" ~ person.birth ~ ")"}}</option>
-                    {% endfor %}
-                </select>
-                </br>
-                <select name="end_node">
-                    {% for person in persons %}
-                        <option value="{{ person.id }}">{{ person.name ~ " (" ~ person.birth ~ ")"}}</option>
-                    {% endfor %}
-                </select>
-                <dt>Type:</dt>
-                <dd><input type = 'text' size = '30' name='type' required></dd>
-           </dl>
-            <input type='submit' value='Create'>
-        </form>
-        <a href = "{{url_for('show_tree')}}">Cancel</a>
-    </body>
+<head>
+    <title>Family tree</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='table_handler.js') }}"></script>
+</head>
+<html>
+<body>
+    <h1>New relationship</h1>
+    <form action="{{url_for('add_new_relationship')}}" method = 'post'>
+         <dl>
+            <select class="btn btn-default dropdown-toggle" name="start_node">
+                {% for person in persons %}
+                    <option value="{{ person.id }}">{{ person.name ~ " (" ~ person.birth ~ ")"}}</option>
+                {% endfor %}
+            </select>
+            </br>
+            <select class="btn btn-default dropdown-toggle" name="end_node">
+                {% for person in persons %}
+                    <option value="{{ person.id }}">{{ person.name ~ " (" ~ person.birth ~ ")"}}</option>
+                {% endfor %}
+            </select>
+            <dt>Type:</dt>
+            <dd><input type='text' size='30' name='type' required></dd>
+        </dl>
+        <input class="btn btn-success" type='submit' value='Create'>
+        <a class="btn btn-warning" href="{{url_for('show_tree')}}">Cancel</a>
+    </form>
+</body>
 </html>

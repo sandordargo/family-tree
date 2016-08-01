@@ -1,39 +1,43 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <script src="{{ url_for('static', filename='table_handler.js') }}"></script>
-    </head>
-    <body>
-        <h1>Edit relationship</h1>
-            {% for person in persons %}
-                        {% if start_node_id == person.id %} <p> {{ person.name ~ " (" ~ person.birth ~ ")"}} </p> {% endif %}
-            {% endfor %}
-            {% for person in persons %}
-                        {% if end_node_id == person.id %} <p> {{ person.name ~ " (" ~ person.birth ~ ")"}} </p> {% endif %}
-            {% endfor %}
-            <p>Type: {{relationship.relationship_type}}</p>
-        <form action="{{url_for('edit_relationship', relationship_id=relationship.relationship_id)}}" method = 'post'>
-            <dl>
-                </br>
-                <table id="properties" border="1" style="width:100%">
-                    <tr>
-                        <th>Property name</th><th>Property value</th>
-                    </tr>
-                    {% for property in relationship.properties %}
-                    <tr>
-                        <td>{{property}}</td>
-                        <td><input name='{{property}}' value='{{relationship.properties[property]}}'></td>
-                        <td><button type="button" onclick="markRowForDeletion(this)"> Delete row </button></td>
-                    </tr>
-                    {% endfor %}
-
-                </table>
-                <button type="button" onclick="add_row()">
-                    Add row
-                </button>
-                <p id="demo"></p>
-           </dl>
-            <input type='submit' value='Update'>
-        </form>
-        <a href = "{{url_for('show_tree')}}">Cancel</a>
-    </body>
+<head>
+    <title>Family tree</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='table_handler.js') }}"></script>
+</head>
+<body>
+    <h1>Edit relationship</h1>
+    {% for person in persons %}
+                {% if start_node_id == person.id %} <p> {{ person.name ~ " (" ~ person.birth ~ ")"}} </p> {% endif %}
+    {% endfor %}
+    {% for person in persons %}
+                {% if end_node_id == person.id %} <p> {{ person.name ~ " (" ~ person.birth ~ ")"}} </p> {% endif %}
+    {% endfor %}
+    <p>Type: {{relationship.relationship_type}}</p>
+    <form action="{{url_for('edit_relationship', relationship_id=relationship.relationship_id)}}" method = 'post'>
+        <dl>
+        </br>
+            <table id="properties" border="1" style="width:auto">
+                <tr>
+                    <th>Property name</th><th>Property value</th><th></th>
+                </tr>
+                {% for property in relationship.properties %}
+                <tr>
+                    <td>{{property}}</td>
+                    <td><input name='{{property}}' value='{{relationship.properties[property]}}'></td>
+                    <td><button class="btn btn-danger" type="button" onclick="markRowForDeletion(this)"> Delete row </button></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <button class="btn btn-info" type="button" onclick="add_row()">Add row</button>
+            <input class="btn btn-success" type='submit' value='Update'>
+       </dl>
+    </form>
+    <a class="btn btn-warning" href = "{{url_for('show_tree')}}">Cancel</a>
+</body>
 </html>

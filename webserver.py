@@ -65,14 +65,15 @@ def edit_person(person_id):
 
 @app.route("/relationships/<int:relationship_id>/delete/", methods=['GET', 'POST'])
 def delete_relationship(relationship_id):
+    db = database_layer.DatabaseConnection()
     if request.method == 'POST':
-        db = database_layer.DatabaseConnection()
         db.remove_relationship(relationship_id)
         start_name, end_name = get_start_name_end_name(relationship_id)
         flash('Relationship between {} and {} has been deleted'.format(start_name, end_name))
         return redirect(url_for('show_tree'))
     else:
-        return render_template('delete_relationship.html', relationship_id=relationship_id)
+        relationship = db.get_relationship(relationship_id)
+        return render_template('delete_relationship.html', relationship=relationship)
 
 
 @app.route('/relationships/<int:relationship_id>/edit/', methods=['GET', 'POST'])
