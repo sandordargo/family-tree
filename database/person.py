@@ -13,3 +13,6 @@ class Person(object):
         node_as_dict['id'] = self.id
         node_as_dict['label'] = self.name
         return node_as_dict
+
+    def get_death_date(self):
+        return self.properties['died'] if self.properties['died'] else ""
