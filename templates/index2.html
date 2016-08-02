@@ -37,42 +37,48 @@
             <li><a class="btn btn-link" href='{{url_for('show_graph') }}'>Show tree</a></li>
         </ul>
     </div>
-    <div class="col-md-4">
+
+    <div class="col-md-5">
         <h1>
             Persons with their relationships
         </h1>
          {% for person, relationships in persons_with_relationships.iteritems() %}
         <div class="panel" >
-                <p>
-                    <b>Name: {{person.name}}</b></br>
-                    Birth date: {{person.birth}}</br>
-                    {% for property in person.properties %}
-                    {% if property not in ["name", "birth", "born"] %}
-                    {{property}} : {{person.properties[property]}}</br>
-                    {% endif %}
-                    {% endfor %}
-                    Database ID: {{person.id}}</br>
-                <ul class="nav nav-pills">
-                    <li><a class="btn btn-link" href="{{ url_for('edit_person', person_id=person.id) }}">Edit</a></li>
-                    <li><a class="btn btn-link" href="{{ url_for('delete_person', person_id=person.id) }}">Delete</a></li>
-                </ul>
-                </p>
-             {% for relation in relationships %}
-        <div class="panel" >
             <p>
-                {{relation.get_formatted_start()}}
-                <span class="badge"> {{relation.get_formatted_relationship_type()}} </span>
-                {{relation.get_formatted_end()}}</br>
-                {% for property in relation.properties %}
-                {{property}} : {{relation.properties[property]}}</br>
+                <h2>
+                    {{person.name}}
+                    <a class="btn btn-warning" href="{{ url_for('edit_person', person_id=person.id) }}">Edit</a>
+                    <a class="btn btn-danger" href="{{ url_for('delete_person', person_id=person.id) }}">Delete</a>
+                </h2></br>
+                Birth date: {{person.birth}}</br>
+                {% for property in person.properties %}
+                {% if property not in ["name", "birth", "born"] %}
+                {{property}} : {{person.properties[property]}}</br>
+                {% endif %}
                 {% endfor %}
-            <ul class="nav nav-pills">
-                <li><a class="btn btn-link" href="{{ url_for('edit_relationship', relationship_id=relation.relationship_id) }}">Edit</a></li>
-                <li><a class="btn btn-link" href="{{ url_for('delete_relationship', relationship_id=relation.relationship_id) }}">Delete</a></li>
-            </ul>
+                Database ID: {{person.id}}</br>
             </p>
-        </div>
-        {% endfor %}
+              <div class="panel-group">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" href="#collapse1">Relationships</a>
+                    </h4>
+                  </div>
+                  <div id="collapse1" class="panel-collapse collapse">
+                    <ul class="list-group">
+                    {% for relation in relationships %}
+                      <li class="list-group-item">
+                          {{relation.get_formatted_start()}} <span class="label label-info">{{relation.get_formatted_relationship_type()}}</span> {{relation.get_formatted_end()}}
+                          <a class="btn btn-warning" href="{{ url_for('edit_relationship', relationship_id=relation.relationship_id) }}">Edit</a>
+                          <a class="btn btn-danger" href="{{ url_for('delete_relationship', relationship_id=relation.relationship_id) }}">Delete</a>
+                      </li>
+                    {% endfor %}
+                    </ul>
+                    <div class="panel-footer">Footer</div>
+                  </div>
+                </div>
+              </div>
             </div>
             {% endfor %}
 
