@@ -152,6 +152,27 @@ class DatabaseConnection(object):
             children_list.append(str(parent[0].uri).rsplit('/', 1)[-1])
         return children_list if children_list else False
 
+    def get_relationships_of_a_node(self, person_id):
+        relationship_list = list()
+        return_value = next(self.connection.cypher.stream("MATCH p=(person:Person)-[r]-() WHERE ID(person) = {} WITH collect(r) AS rs RETURN rs".format(person_id)))
+        print("relationship for person: " + person_id)
+        print(return_value)
+        start_place = 0
+        while True:
+            start_place = str(return_value).find("relationship/", start_place) + len("relationship/")
+            if start_place == -1 + len("relationship/"):
+                print(str(return_value))
+                print('not found')
+                break
+            end_place = str(return_value).find("'", start_place)
+            relationship_list.append(self.get_relationship(str(return_value)[start_place:end_place]))
+            print('next')
+            print(str(return_value)[start_place:end_place])
+            start_place = end_place
+        print(relationship_list)
+        return relationship_list
+
+
 # dc = DatabaseConnection()
 # dc.add_person("CHMARA OdOn", 1907)
 # dc.add_relationship("CHMARAMARIA1939", "CHMARAODON1907", "CHILD_OF")

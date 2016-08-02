@@ -10,11 +10,21 @@ app.secret_key = 'some_secret'
 APPLICATION_NAME = "Family Tree Application"
 
 
-@app.route("/")
 @app.route("/index.html")
 def show_tree():
     db = database_layer.DatabaseConnection()
     return render_template('index.html', persons=db.get_all_persons(), relations=db.get_all_relationships())
+
+
+@app.route("/")
+@app.route("/index2.html")
+def show_tree_2():
+    db = database_layer.DatabaseConnection()
+    persons_relationship_map = dict()
+    for person in db.get_all_persons():
+        persons_relationship_map[person] = db.get_relationships_of_a_node(person.id)
+
+    return render_template('index2.html', persons_with_relationships=persons_relationship_map)
 
 
 @app.route("/new_person.html", methods=['GET', 'POST'])
