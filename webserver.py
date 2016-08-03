@@ -24,7 +24,11 @@ def show_tree_2():
     for person in db.get_all_persons():
         persons_relationship_map[person] = db.get_relationships_of_a_node(person.id)
 
-    return render_template('index2.html', persons_with_relationships=persons_relationship_map)
+    my_family_tree = family_tree.FamilyTree()
+    print(my_family_tree.get_tree_as_json())
+    family_tree_json_dump = json.dumps(my_family_tree.get_tree_as_json())
+
+    return render_template('index2.html', persons_with_relationships=persons_relationship_map, json_to_display=family_tree_json_dump)
 
 
 @app.route("/new_person.html", methods=['GET', 'POST'])
