@@ -87,8 +87,8 @@ class HorizontalSorter(object):
     def put_parents_above_their_children(self):
         # TODO average children positions for parents
         # TODO move their siblings with them?
-        self.level_person_dict.keys().sort(reverse=True)
-        for youngest_level in self.level_person_dict:
+
+        for youngest_level in reversed(sorted(self.level_person_dict.keys())):
             for person in self.level_person_dict[youngest_level]:
                 if self.person_dictionary[int(person)].parents:
                     parent_coeff = 0
