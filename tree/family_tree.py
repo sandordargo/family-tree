@@ -1,6 +1,6 @@
 from database import database_layer
 from tree import vertical_sorter, horizontal_sorter
-import person_node
+from tree import person_node
 
 
 class FamilyTree(object):
