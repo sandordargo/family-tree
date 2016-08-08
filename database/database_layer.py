@@ -17,7 +17,6 @@ class DatabaseConnection(object):
 
     def __init__(self):
         self.connection = Graph()
-        self.uri = self.connection.uri
 
     def add_person(self, person_name, year_of_birth):
         print('person_name: {}, year of birth {}'.format(person_name, year_of_birth))
