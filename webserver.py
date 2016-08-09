@@ -10,15 +10,9 @@ app.secret_key = 'some_secret'
 APPLICATION_NAME = "Family Tree Application"
 
 
+@app.route("/")
 @app.route("/index.html")
 def show_tree():
-    db = database_layer.DatabaseConnection()
-    return render_template('index.html', persons=db.get_all_persons(), relations=db.get_all_relationships())
-
-
-@app.route("/")
-@app.route("/index2.html")
-def show_tree_2():
     db = database_layer.DatabaseConnection()
     persons_relationship_map = dict()
     for person in db.get_all_persons():
@@ -28,7 +22,7 @@ def show_tree_2():
     print(my_family_tree.get_tree_as_json())
     family_tree_json_dump = json.dumps(my_family_tree.get_tree_as_json())
 
-    return render_template('index2.html', persons_with_relationships=persons_relationship_map, json_to_display=family_tree_json_dump)
+    return render_template('index.html', persons_with_relationships=persons_relationship_map, json_to_display=family_tree_json_dump)
 
 
 @app.route("/new_person.html", methods=['GET', 'POST'])
@@ -81,8 +75,8 @@ def edit_person(person_id):
 def delete_relationship(relationship_id):
     db = database_layer.DatabaseConnection()
     if request.method == 'POST':
-        db.remove_relationship(relationship_id)
         start_name, end_name = get_start_name_end_name(relationship_id)
+        db.remove_relationship(relationship_id)
         flash('Relationship between {} and {} has been deleted'.format(start_name, end_name))
         return redirect(url_for('show_tree'))
     else:
@@ -110,7 +104,6 @@ def edit_relationship(relationship_id):
         flash('Relationship between {} and {} has been edited'.format(start_name, end_name))
         return redirect(url_for('show_tree'))
     else:
-        print(str(db.get_relationship(relationship_id).start_node.uri).rsplit('/', 1)[-1])
         return render_template('edit_relationship.html',
                                persons=db.get_all_persons(),
                                relationship=db.get_relationship(relationship_id),
@@ -127,7 +120,7 @@ def add_new_relationship():
                             relationship_type=request.form['type'])
         start_name = db.get_person(request.form['start_node']).name
         end_name = db.get_person(request.form['end_node']).name
-        flash('Relationship between {} and {} has been addedre'.format(start_name, end_name))
+        flash('Relationship between {} and {} has been added'.format(start_name, end_name))
         return redirect(url_for('show_tree'))
     else:
         return render_template('new_relationship.html', persons=db.get_all_persons())
@@ -144,8 +137,8 @@ def show_graph():
 def get_start_name_end_name(relationship_id):
     db = database_layer.DatabaseConnection()
     relationship = db.get_relationship(relationship_id)
-    start_name = db.get_person(relationship.start_node).name
-    end_name = db.get_person(relationship.end_node).name
+    start_name = db.get_person(relationship.get_start_id()).name
+    end_name = db.get_person(relationship.get_start_id()).name
     return start_name, end_name
 
 if __name__ == "__main__":

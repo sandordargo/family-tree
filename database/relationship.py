@@ -9,8 +9,8 @@ class Relationship(object):
     def get_as_json(self):
         relationship_as_dict = dict()
         relationship_as_dict['id'] = self.relationship_id
-        relationship_as_dict['source'] = str(self.start_node.uri).rsplit('/', 1)[-1]
-        relationship_as_dict['target'] = str(self.end_node.uri).rsplit('/', 1)[-1]
+        relationship_as_dict['source'] = self.get_start_id()
+        relationship_as_dict['target'] = self.get_end_id()
         relationship_as_dict['type'] = self.relationship_type
         return relationship_as_dict
 
@@ -34,6 +34,12 @@ class Relationship(object):
         death = death.replace('"', "")
 
         return '{name} ({birth} - {death})'.format(name=name, birth=birth, death=death)
+
+    def get_start_id(self):
+        return str(self.start_node.uri).rsplit('/', 1)[-1]
+
+    def get_end_id(self):
+        return str(self.end_node.uri).rsplit('/', 1)[-1]
 
     def get_formatted_start(self):
         return self.get_formatted_person(str(self.start_node))

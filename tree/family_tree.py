@@ -58,7 +58,8 @@ class FamilyTree(object):
             node_as_json =  self.nodes[node].get_as_json()
             node_as_json['size'] = self.size
             node_as_json['color'] = self.color
-            node_as_json['y'] = self.levels_on_tree[str(node)]
+            node_as_json['y'] = self.levels_on_tree[str(node)] if str(node) in self.levels_on_tree \
+                else max(self.levels_on_tree)
             family_tree_json['nodes'].append(node_as_json)
             # print('json for 1 enter')
             # print(self.levels_on_tree[str(node)])
