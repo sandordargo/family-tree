@@ -98,7 +98,7 @@
             Persons with their relationships
         </h1>
         {% for person, relationships in persons_with_relationships.items() %}
-        <div class="panel">
+        <div class="panel" id="person{{person.id}}">
             <p>
             <h2>
                 {{person.name}}
@@ -183,7 +183,6 @@
     var nodeId = e.data.node.id,
     toKeep = s.graph.neighbors(nodeId);
     toKeep[nodeId] = e.data.node;
-
     s.graph.nodes().forEach(function(n) {
       if (toKeep[n.id])
         n.color = n.originalColor;
@@ -198,20 +197,27 @@
         e.color = '#eee';
     });
 
+    document.getElementById("collapse" + nodeId).className += " in";
+
     // Same as in the previous event:
     s.refresh();
+    document.getElementById('person' + nodeId).scrollIntoView();;
   });
 
      // When the stage is clicked, we just color each
       // node and edge with its original color.
   s.bind('clickStage', function(e) {
     s.graph.nodes().forEach(function(n) {
+      <!--document.getElementById('collapse' + n.id).classList.remove('in');-->
+      c = 'in'
+      document.getElementById("collapse" + n.id).className = document.getElementById("collapse" + n.id).className.replace( new RegExp('(?:^|\\s)'+c+'(?!\\S)') ,'')
       n.color = n.originalColor;
     });
 
     s.graph.edges().forEach(function(e) {
       e.color = e.originalColor;
     });
+
 
     // Same as in the previous event:
     s.refresh();
