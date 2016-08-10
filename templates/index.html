@@ -188,6 +188,10 @@
         n.color = n.originalColor;
       else
         n.color = '#eee';
+      if (n.id != nodeId) {
+        c = 'in'
+        document.getElementById("collapse" + n.id).className = document.getElementById("collapse" + n.id).className.replace( new RegExp('(?:^|\\s)'+c+'(?!\\S)') ,'')
+      }
     });
 
   s.graph.edges().forEach(function(e) {
