@@ -19,10 +19,10 @@ def show_tree():
         persons_relationship_map[person] = db.get_relationships_of_a_node(person.id)
 
     my_family_tree = family_tree.FamilyTree()
-    print(my_family_tree.get_tree_as_json())
     family_tree_json_dump = json.dumps(my_family_tree.get_tree_as_json())
 
-    return render_template('index.html', persons_with_relationships=persons_relationship_map, json_to_display=family_tree_json_dump)
+    return render_template('index.html', persons_with_relationships=persons_relationship_map,
+                           json_to_display=family_tree_json_dump)
 
 
 @app.route("/new_person.html", methods=['GET', 'POST'])
@@ -58,7 +58,8 @@ def edit_person(person_id):
         for element in request.form:
             new_property = re.search('propertyname(\d+)', element)
             if new_property:
-                properties[request.form[element]] = request.form['propertyvalue{}'.format(new_property.group(1))]
+                properties[request.form[element]] = request.form[
+                    'propertyvalue{}'.format(new_property.group(1))]
             elif element.startswith('propertyvalue'):
                 pass
             else:
@@ -93,7 +94,8 @@ def edit_relationship(relationship_id):
         for element in request.form:
             new_property = re.search('propertyname(\d+)', element)
             if new_property:
-                properties[request.form[element]] = request.form['propertyvalue{}'.format(new_property.group(1))]
+                properties[request.form[element]] = request.form[
+                    'propertyvalue{}'.format(new_property.group(1))]
             elif element.startswith('propertyvalue'):
                 pass
             else:
@@ -107,8 +109,13 @@ def edit_relationship(relationship_id):
         return render_template('edit_relationship.html',
                                persons=db.get_all_persons(),
                                relationship=db.get_relationship(relationship_id),
-                               start_node_id=str(db.get_relationship(relationship_id).start_node.uri).rsplit('/', 1)[-1],
-                               end_node_id=str(db.get_relationship(relationship_id).end_node.uri).rsplit('/', 1)[-1])
+                               start_node_id=
+                               str(db.get_relationship(relationship_id).start_node.uri).rsplit('/',
+                                                                                               1)[
+                                   -1],
+                               end_node_id=
+                               str(db.get_relationship(relationship_id).end_node.uri).rsplit('/',
+                                                                                             1)[-1])
 
 
 @app.route("/new_relationship.html", methods=['GET', 'POST'])
@@ -129,7 +136,6 @@ def add_new_relationship():
 @app.route("/graph.html", methods=['GET'])
 def show_graph():
     my_family_tree = family_tree.FamilyTree()
-    print(my_family_tree.get_tree_as_json())
     family_tree_json_dump = json.dumps(my_family_tree.get_tree_as_json())
     return render_template('graph.html', json_to_display=family_tree_json_dump)
 
@@ -141,8 +147,7 @@ def get_start_name_end_name(relationship_id):
     end_name = db.get_person(relationship.get_start_id()).name
     return start_name, end_name
 
+
 if __name__ == "__main__":
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
-
-

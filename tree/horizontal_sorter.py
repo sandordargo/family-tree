@@ -55,12 +55,6 @@ class HorizontalSorter(object):
     def move(self, person_id, change):
         if change == 0:
             return
-        if change < 0:
-            print('=============')
-            print('negative move')
-            print(person_id)
-            print(change)
-            print('=============')
         new_position = self.person_horizontal_position_dict[person_id] + change
         if new_position in self.position_person_dict and \
                 len(self.position_person_dict[new_position]) > 0:
