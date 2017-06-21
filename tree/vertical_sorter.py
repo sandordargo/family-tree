@@ -14,6 +14,8 @@ class VerticalSorter(object):
 
         # get first relationship, put high enough for a worst case scenario, where everyone would go under it
         # target to up or same level based on type of relationship
+        if len(self.edges) == 0:
+            return person_level_dict
         first_relationship = self.edges[0]
         person_level_dict[first_relationship['source']] = len(self.edges) + 1
         if first_relationship['type'] == 'CHILD_OF':
