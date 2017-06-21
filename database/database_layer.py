@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from py2neo import Graph, Node, Relationship
+from py2neo import Graph, Node, Relationship, authenticate
 
 from database import person, relationship
 
@@ -15,6 +15,7 @@ from database import person, relationship
 
 class DatabaseConnection(object):
     def __init__(self):
+        authenticate("localhost:7474", "neo4j", "admin")
         self.connection = Graph()
 
     def add_person(self, person_name, year_of_birth):
@@ -27,7 +28,7 @@ class DatabaseConnection(object):
 
     def remove_relationship(self, relationship_id):
         self.connection.cypher.stream(
-            "MATCH n - [r] - () WHERE ID(r) = {} DELETE r".format(relationship_id))
+            "MATCH (n) - [r] - () WHERE ID(r) = {} DELETE r".format(relationship_id))
 
     def remove_person(self, person_id):
         self.connection.cypher.stream(
@@ -90,7 +91,7 @@ class DatabaseConnection(object):
 
     def get_neo4j_relationship(self, relationship_id):
         single_relationship_list = self.connection.cypher.stream(
-            "MATCH n - [r] - () WHERE ID(r) = {} RETURN r"
+            "MATCH (n) - [r] - () WHERE ID(r) = {} RETURN r"
                 .format(relationship_id))
         for a_relation in single_relationship_list:
             return a_relation[0]
