@@ -1,3 +1,13 @@
+class RelationshipTypeMapper(object):
+    @staticmethod
+    def get_mapper():
+        return {"CHILD_OF": "IS CHILD OF",
+                "MARRIED": "GOT MARRIED TO",
+                "IS CHILD OF": "IS CHILD OF",
+                "GOT MARRIED TO": "GOT MARRIED TO"}
+
+
+
 class Relationship(object):
     def __init__(self, relationship_id, start_node, end_node, relationship_type, properties):
         self.relationship_id = relationship_id
@@ -52,6 +62,4 @@ class Relationship(object):
 
     @staticmethod
     def get_mapper():
-        return {"CHILD_OF": "IS CHILD OF",
-                "MARRIED": "GOT MARRIED TO"}
-
+        return RelationshipTypeMapper().get_mapper()

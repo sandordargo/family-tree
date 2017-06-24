@@ -2,7 +2,7 @@ import json
 
 from flask import Flask, render_template, request, url_for, redirect, flash, make_response
 
-from database import database_layer
+from database import database_layer, relationship
 from tree import family_tree
 
 app = Flask(__name__)
@@ -124,13 +124,15 @@ def add_new_relationship():
     if request.method == 'POST':
         db.add_relationship(start_id=request.form['start_node'],
                             end_id=request.form['end_node'],
-                            relationship_type=request.form['type'])
+                            relationship_type=request.form['relationship_type']
+                            )
         start_name = db.get_person(request.form['start_node']).name
         end_name = db.get_person(request.form['end_node']).name
         flash('Relationship between {} and {} has been added'.format(start_name, end_name))
         return redirect(url_for('show_tree'))
     else:
-        return render_template('new_relationship.html', persons=db.get_all_persons())
+        relationship_types = list(relationship.RelationshipTypeMapper.get_mapper().values())
+        return render_template('new_relationship.html', persons=db.get_all_persons(), types=relationship_types)
 
 
 @app.route("/graph.html", methods=['GET'])
